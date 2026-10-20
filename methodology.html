@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>How PairScope scores tokens | Methodology</title>
+<meta name="description" content="Exactly how PairScope calculates its Heat, Risk and Contract scores, what each check looks at, and what the scores cannot tell you.">
+<link rel="canonical" href="https://pairscope.online/methodology.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="css/methodology.css">
+</head>
+<body>
+<main class="wrap">
+<p><a href="/">← Back to PairScope</a></p>
+<h1>How PairScope scores tokens</h1>
+<p class="muted">Last updated: October 21, 2026. These are the exact rules the scanner runs today. If we change them, this page changes too.</p>
+
+<div class="box"><b>Read this first.</b> Every score here is an automated estimate from public data. None of them is an audit, a recommendation or a guarantee. A high score does not make a token safe, and scammers can pass basic checks. Not financial advice.</div>
+
+<h2>Data sources</h2>
+<ul>
+<li><b>Market data:</b> DexScreener (price, volume, liquidity, trades, pair age) and GeckoTerminal (charts).</li>
+<li><b>Contract security:</b> GoPlus Security API. We do not read contract code ourselves.</li>
+<li>Third-party data can be delayed, incomplete or wrong. Missing data is never treated as safe.</li>
+</ul>
+
+<h2>Heat score (0 to 100): how active a token is right now</h2>
+<p>Heat measures momentum, not quality. A high Heat can be a real surge or manufactured activity.</p>
+<div class="scroll"><table>
+<tr><th>Component</th><th>How it is calculated</th><th>Max points</th></tr>
+<tr><td>Volume surge</td><td>Last-hour volume divided by the pair's average hourly volume (24h volume spread over its age, capped at 24 hours). Points = (surge − 1) × 10.</td><td class="n">50</td></tr>
+<tr><td>1h price change</td><td>The 1-hour % price change, counted only when positive.</td><td class="n">20</td></tr>
+<tr><td>Buy pressure</td><td>Share of last-hour trades that were buys. Points = (buy share − 0.5) × 60.</td><td class="n">30</td></tr>
+</table></div>
+<p>If a pair had fewer than 10 trades in the last hour, Heat is halved. Colors: 60+ hot, 30 to 59 moderate, under 30 quiet.</p>
+<p><b>Known weakness:</b> Heat counts trades, not unique traders. One wallet trading with itself can inflate it.</p>
+
+<h2>Risk Radar (0 to 100): market-based safety signals</h2>
+<p>Starts at 100 and loses points for each warning. Labels: 75+ Lower risk, 50 to 74 Caution, under 50 High risk.</p>
+<div class="scroll"><table>
+<tr><th>Check</th><th>Penalty</th></tr>
+<tr><td>Pair age unknown</td><td class="n">−8</td></tr>
+<tr><td>Launched under 1 hour ago / under 24 hours / under 1 week</td><td class="n">−25 / −15 / −6</td></tr>
+<tr><td>Liquidity under $5k / $20k / $50k / $100k</td><td class="n">−35 / −25 / −12 / −5</td></tr>
+<tr><td>Liquidity under 1% / under 3% of fully diluted valuation</td><td class="n">−12 / −6</td></tr>
+<tr><td>24h volume above 20× liquidity (possible hype or wash trading)</td><td class="n">−10</td></tr>
+<tr><td>30+ buys and zero sells (possible honeypot)</td><td class="n">−20</td></tr>
+<tr><td>Sellers outnumber buyers by more than 1.5× (50+ trades)</td><td class="n">−10</td></tr>
+<tr><td>Fewer than 50 trades in 24h</td><td class="n">−10</td></tr>
+<tr><td>Price moved over 200% in 24h, or over 50% in the last hour</td><td class="n">−12 / −8</td></tr>
+</table></div>
+<p><b>Known weakness:</b> it uses market data only. It cannot see hidden mint functions, taxes or ownership tricks, which is why the Contract score exists.</p>
+
+<h2>Contract score (0 to 100): GoPlus security findings</h2>
+<p>Starts at 100 and loses points for each flag GoPlus reports. Colors: 80+ green, 55 to 79 yellow, under 55 red. Chains GoPlus does not cover show no score.</p>
+<h3>Solana tokens</h3>
+<div class="scroll"><table>
+<tr><th>Flag</th><th>Penalty</th></tr>
+<tr><td>Mint authority still enabled</td><td class="n">−25</td></tr>
+<tr><td>Freeze authority still enabled</td><td class="n">−20</td></tr>
+<tr><td>Non-transferable token</td><td class="n">−25</td></tr>
+<tr><td>Default account state may restrict transfers</td><td class="n">−15</td></tr>
+<tr><td>Transfer fee feature</td><td class="n">−12</td></tr>
+<tr><td>Mutable metadata</td><td class="n">−8</td></tr>
+</table></div>
+<h3>EVM tokens (Ethereum, BNB Chain, Base and others GoPlus supports)</h3>
+<div class="scroll"><table>
+<tr><th>Flag</th><th>Penalty</th></tr>
+<tr><td>Honeypot flag</td><td class="n">−55</td></tr>
+<tr><td>Some holders cannot sell all tokens</td><td class="n">−40</td></tr>
+<tr><td>Owner can change holder balances</td><td class="n">−30</td></tr>
+<tr><td>Buying restricted</td><td class="n">−35</td></tr>
+<tr><td>Blacklist capability / ownership takeback possible</td><td class="n">−25 / −25</td></tr>
+<tr><td>Hidden owner</td><td class="n">−20</td></tr>
+<tr><td>Transfers pausable / more tokens can be minted / source not verified</td><td class="n">−15 each</td></tr>
+<tr><td>Buy tax 5% to 9% / 10%+</td><td class="n">−10 / −18</td></tr>
+<tr><td>Sell tax 5% to 9% / 10%+</td><td class="n">−12 / −22</td></tr>
+<tr><td>Top holders (excluding contracts) own 30% / 50% / 70%+ of supply</td><td class="n">−8 / −15 / −25</td></tr>
+<tr><td>Creator wallet holds 20%+ of supply</td><td class="n">−10</td></tr>
+<tr><td>Under 50% / under 20% of liquidity locked or burned</td><td class="n">−10 / −20</td></tr>
+</table></div>
+<p><b>Known weakness:</b> a clean scan only means GoPlus found nothing obvious. Brand-new contracts, upgradeable proxies and off-chain scams can slip through.</p>
+
+<h2>Verdict shown on token pages</h2>
+<ul>
+<li><b>High risk:</b> Contract score under 55 or Risk Radar under 40.</li>
+<li><b>Caution:</b> Contract score under 80, Risk Radar under 70, two or more warning flags, or no contract scan available.</li>
+<li><b>Lower risk:</b> none of the above. This is not an endorsement.</li>
+</ul>
+
+<h2>Surges tab</h2>
+<p>Shows pairs from Trending and New Pairs where 1-hour volume is at least 2× the pair's average hour, Risk Radar is 50 or higher, the 1-hour price change is positive, and the Contract score is 80 or higher. Picks that pass are saved in your browser with their price at that moment, so you can see how they did afterward.</p>
+
+<h2>Paid listings and independence</h2>
+<p>Featured listings are paid placements shown in their own tab. They do not change any score on this page, and every featured token still shows its own Risk and Contract scores. Tokens that fail the contract scan are declined.</p>
+
+<h2>What we do not do yet</h2>
+<ul>
+<li>We do not check how many unique wallets are trading, or whether holders are linked to each other.</li>
+<li>We do not check the deployer's history of past tokens.</li>
+<li>We have not yet published how well our scores predicted outcomes. A public track record is planned.</li>
+</ul>
+
+<p class="muted">Found an error or have a suggestion? Message us on <a href="https://t.me/pairscopepsp" rel="noopener">Telegram</a> or <a href="https://x.com/PairScopescreen" rel="noopener">X</a>.</p>
+</main>
+</body>
+</html>
