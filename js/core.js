@@ -290,7 +290,7 @@ function checkAlerts(){
       if(a.k!==key(r))return true;
       var ok=a.d==="above"?r.p>=a.p:r.p<=a.p;
       if(ok){fire(a,r.p);hit=true;return false}return true})});
-    if(hit){saveA();renderAlerts()}
+    if(hit){if(TGL){try{localStorage.setItem("ps_alerts",JSON.stringify(A))}catch(e){}}else saveA();renderAlerts()} /* Telegram linked: keep the Worker's copy so it can send the Telegram message; syncing the deletion here would cancel it */
   });
 }
 function fromUrl(){
