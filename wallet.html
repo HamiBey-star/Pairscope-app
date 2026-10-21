@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wallet - Pairscope</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c1a28;
+    --panel: #132538;
+    --line: #223a52;
+    --text: #e8eff6;
+    --muted: #8da4ba;
+    --accent: #8cc8ff;
+    --buy: #4fd1a0;
+    --sell: #ff7b8c;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0;
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 20px 16px 56px; }
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; }
+  header a { color: var(--text); text-decoration: none; font-weight: 600; font-size: 1.15rem; }
+  header span { color: var(--muted); font-size: .9rem; }
+
+  form { display: flex; gap: 8px; margin-bottom: 32px; }
+  input[type="text"] {
+    flex: 1; min-width: 0;
+    padding: 13px 14px;
+    background: var(--panel); color: var(--text);
+    border: 1px solid var(--line); border-radius: 8px;
+    font: inherit; font-size: .95rem;
+  }
+  input[type="text"]::placeholder { color: var(--muted); }
+  button {
+    padding: 13px 20px; border: 0; border-radius: 8px; cursor: pointer;
+    background: var(--accent); color: #07131f; font: inherit; font-weight: 600;
+  }
+  input:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+
+  .addr { color: var(--muted); font-size: .9rem; word-break: break-all; margin: 0 0 6px; }
+  .net { font-size: clamp(2.4rem, 9vw, 3.6rem); font-weight: 600; letter-spacing: -.02em; line-height: 1.1; margin: 0; }
+  .net small { font-size: .4em; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-left: 6px; }
+  .net.pos { color: var(--buy); }
+  .net.neg { color: var(--sell); }
+  .caption { color: var(--muted); margin: 4px 0 28px; }
+
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 36px; }
+  .stats div { background: var(--panel); padding: 14px 16px; }
+  .stats b { display: block; font-size: 1.25rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stats span { color: var(--muted); font-size: .85rem; }
+  @media (min-width: 640px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+
+  h2 { font-size: 1.05rem; font-weight: 600; margin: 0 0 10px; }
+  .tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 560px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; font-size: .85rem; background: var(--panel); }
+  tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; }
+  .buy { color: var(--buy); font-weight: 600; }
+  .sell { color: var(--sell); font-weight: 600; }
+  td a { color: var(--accent); text-decoration: none; }
+  td a:hover { text-decoration: underline; }
+
+  .msg { color: var(--muted); padding: 24px 0; }
+  .msg.err { color: var(--sell); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="/">Pairscope</a>
+    <span>Wallet tracker</span>
+  </header>
+
+  <form id="f">
+    <input id="q" type="text" placeholder="Paste a Solana wallet address" autocomplete="off" spellcheck="false" aria-label="Wallet address">
+    <button type="submit">Look up</button>
+  </form>
+
+  <main id="out"><p class="msg">Paste a wallet address above to see its recent trades.</p></main>
+</div>
+
+<script>
+  var API = "https://pairscope-indexer2.dr-hamzakhan0.workers.dev";
+  var SOL = "So11111111111111111111111111111111111111112";
+  var USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+  var USDT = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
+
+  var out = document.getElementById("out");
+  var input = document.getElementById("q");
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function short(s) { return s.length > 12 ? s.slice(0, 4) + "..." + s.slice(-4) : s; }
+  function fmt(n, d) { return Number(n).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function ago(ts) {
+    var s = Math.max(0, Math.floor(Date.now() / 1000) - ts);
+    if (s < 60) return s + "s ago";
+    if (s < 3600) return Math.floor(s / 60) + "m ago";
+    if (s < 86400) return Math.floor(s / 3600) + "h ago";
+    return Math.floor(s / 86400) + "d ago";
+  }
+  function quote(t) {
+    var m = t.quote_mint, raw = Number(t.quote_amount);
+    if (m === SOL) return fmt(raw / 1e9, 4) + " SOL";
+    if (m === USDC) return fmt(raw / 1e6, 2) + " USDC";
+    if (m === USDT) return fmt(raw / 1e6, 2) + " USDT";
+    return "-";
+  }
+  function show(node) { out.textContent = ""; out.appendChild(node); }
+  function message(text, isErr) { show(el("p", "msg" + (isErr ? " err" : ""), text)); }
+
+  function stat(value, label) {
+    var d = el("div");
+    d.appendChild(el("b", "", value));
+    d.appendChild(el("span", "", label));
+    return d;
+  }
+
+  function render(d) {
+    var box = el("div");
+    box.appendChild(el("p", "addr", d.wallet));
+
+    var spent = d.sol_spent || 0, got = d.sol_received || 0, net = got - spent;
+    var big = el("p", "net " + (net >= 0 ? "pos" : "neg"), (net >= 0 ? "+" : "") + fmt(net, 4));
+    big.appendChild(el("small", "", "SOL"));
+    box.appendChild(big);
+    box.appendChild(el("p", "caption", "Received minus spent on SOL trades"));
+
+    var stats = el("div", "stats");
+    stats.appendChild(stat(String(d.trades || 0), "Trades"));
+    stats.appendChild(stat((d.buys || 0) + " / " + (d.sells || 0), "Buys / sells"));
+    stats.appendChild(stat(fmt(spent, 4), "SOL spent"));
+    stats.appendChild(stat(fmt(got, 4), "SOL received"));
+    box.appendChild(stats);
+
+    box.appendChild(el("h2", "", "Recent trades"));
+
+    if (!d.recent || !d.recent.length) {
+      box.appendChild(el("p", "msg", "No trades found for this wallet yet. Pairscope only shows swaps it has indexed."));
+      show(box);
+      return;
+    }
+
+    var wrap = el("div", "tablebox");
+    var table = el("table");
+    var head = el("tr");
+    ["Time", "Side", "Token", "Amount"].forEach(function (h, i) {
+      head.appendChild(el("th", i === 3 ? "num" : "", h));
+    });
+    var thead = el("thead"); thead.appendChild(head); table.appendChild(thead);
+
+    var tbody = el("tbody");
+    d.recent.forEach(function (t) {
+      var tr = el("tr");
+      tr.appendChild(el("td", "", ago(t.ts)));
+      tr.appendChild(el("td", t.side === 0 ? "buy" : "sell", t.side === 0 ? "Buy" : "Sell"));
+
+      var tok = el("td");
+      var a = el("a", "", short(t.pair_address));
+      a.href = "https://solscan.io/token/" + encodeURIComponent(t.pair_address);
+      a.target = "_blank"; a.rel = "noopener";
+      tok.appendChild(a);
+      tr.appendChild(tok);
+
+      var amt = el("td", "num");
+      var tx = el("a", "", quote(t));
+      tx.href = "https://solscan.io/tx/" + encodeURIComponent(t.signature);
+      tx.target = "_blank"; tx.rel = "noopener";
+      amt.appendChild(tx);
+      tr.appendChild(amt);
+
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    box.appendChild(wrap);
+    show(box);
+  }
+
+  function load(address) {
+    input.value = address;
+    message("Loading...");
+    fetch(API + "/wallet?address=" + encodeURIComponent(address))
+      .then(function (r) {
+        if (!r.ok) throw new Error("bad status");
+        return r.json();
+      })
+      .then(render)
+      .catch(function () { message("Could not load this wallet. Check the address and try again.", true); });
+  }
+
+  document.getElementById("f").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = input.value.trim();
+    if (!v) return;
+    history.replaceState(null, "", "?address=" + encodeURIComponent(v));
+    load(v);
+  });
+
+  var start = new URLSearchParams(location.search).get("address");
+  if (start) load(start);
+</script>
+</body>
+</html>
