@@ -9,8 +9,12 @@ Not financial advice.
 - `js/` scripts, loaded in the order listed in `index.html` (order matters: they share globals)
 - `_headers` Cloudflare security headers (kept separate from the meta CSP in index.html)
 
+## UI notes
+- `js/icons.js` is the single icon set (`PSI(name,size)`). Loaded before `core.js`. Icons use `pointer-events:none` so tab clicks still hit the button.
+- `js/hot-cards.js` thresholds: `MIN_SCANS`, `MIN_HEAT`, `RUG` at the top of the file.
+
 ## Before you deploy
-- Add `og.png` (1200x630) to the repo root, since index.html now points to https://pairscope.online/og.png
+- `og.jpg` (share image) must stay in the repo root; index.html points to https://pairscope.online/og.jpg
 - Attach pairscope.online as a custom domain in Cloudflare
 - Never commit Worker secrets; use `wrangler secret put`
 

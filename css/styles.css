@@ -239,3 +239,55 @@ th[tabindex]:focus-visible,tr[tabindex]:focus-visible{outline:2px solid var(--ac
 .psp .pb a.pp{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:600}
 .psp .pb[hidden]{display:none}
 .psp .psh{align-items:center}.psp .psh .shl{font-size:10.5px;color:var(--muted);flex:none}
+
+/* ===== UI polish pass ===== */
+/* 6. contrast: brighter muted text + no tiny type (dark theme only; light theme keeps its own --muted) */
+:root{--muted:#a3adb8}
+html[data-theme=light]{--muted:#5b6672}
+.hv-s,.hv-n,.live,.q,.n,.sym+.q{font-size:12px}
+.rbox small,.note,.soc span,.pca span,.psp .psh .shl{font-size:12px}
+.pulse{font-size:13px}
+.hv-ch{font-size:11px}
+#psnav button{font-size:11px}
+th{font-size:12px}
+
+/* 5. one icon set (replaces mixed emoji) */
+.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;flex:none;pointer-events:none}
+.tab{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.hv-pill,.hv-t,.hv-n,.hv-s{display:inline-flex;align-items:center;gap:5px}
+.hv-s{flex-wrap:wrap}
+#psnav button i{display:flex;line-height:0}
+
+@media(max-width:700px){
+  /* 1. content must clear the floating bottom nav */
+  body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  html{scroll-padding-bottom:96px}
+  #psnav{background:rgba(14,19,25,.94)}
+  /* 4. Checker is the differentiator: give it an accent in the nav */
+  #psnav button[data-n="check"] i{color:var(--accent)}
+  /* keep pair rows closer to the top of the first screen */
+  .hv-hot{padding:12px;gap:10px}
+  .hv-hot .hv{width:48px;height:48px}
+  .hv-hot .hv-sym{font-size:17px}
+  .hv-hot .hv-sp{width:96px;height:38px}
+  .hv-strip .hv-card{width:150px;padding:12px 10px 10px}
+  .hv-strip .hv{width:44px;height:44px;margin:2px auto 6px}
+  .hv-strip .hv-sp{display:none}
+  .hv-hd{margin:10px 2px 6px}
+  .psp p{display:none}
+}
+
+/* ===== final pass ===== */
+/* "Sponsored" tag was 9px */
+.q .rk-y{font-size:10.5px!important}
+@media(max-width:700px){
+  /* compact $PSP card: smaller buttons, one share button instead of four rows of links */
+  .psp .pb{gap:6px;margin-top:8px}
+  .psp .pb a,.psp .pb button{padding:7px 10px;font-size:12px}
+  #pspshare .shl,#pspshare a{display:none}
+  #pspshare{margin-top:6px}
+  .psp .pca{padding:6px 10px;margin-top:8px}
+  .psp .pca code{font-size:11.5px;word-break:break-all}
+  .psp small{margin-top:6px}
+  .rbox.hero{margin-top:8px}
+}

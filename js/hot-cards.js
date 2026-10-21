@@ -4,6 +4,8 @@ var API="https://pairscope-featured.dr-hamzakhan0.workers.dev";
 var bar=document.createElement("div");bar.id="pshot";bar.style.display="none";
 var tb=document.getElementById("tabs");if(!tb)return;tb.parentNode.insertBefore(bar,tb);
 var tod=null,top=[],E={};
+var MIN_SCANS=3,MIN_HEAT=30,RUG=-80; /* Most scanned: needs enough scans and no >80% collapse. Hot now: needs real Heat. */
+function shown(){return top.filter(function(o){var r=E[key(o.c,o.a)];return (+o.n||0)>=MIN_SCANS&&!(r&&isFinite(r.h24)&&r.h24<=RUG)})}
 var CC={solana:"#9945ff",bsc:"#f3ba2f",ethereum:"#627eea",base:"#0052ff",arbitrum:"#28a0f0",polygon:"#8247e5",optimism:"#ff0420",avalanche:"#e84142"};
 function key(c,a){return c+":"+a}
 function av(o){var u=o.img&&/^https:\/\/(cdn|dd)\.dexscreener\.com\//.test(o.img)?o.img:"";
@@ -24,22 +26,22 @@ function hotCard(r){
   return'<div class="hv-card hv-hot" data-hc="'+esc(r.c)+'" data-ha="'+esc(r.addr)+'" role="button" tabindex="0">'+av(r)+
   '<div style="min-width:0;flex:1"><div class="hv-sym">'+esc(r.s)+' '+chain(r.c)+'</div>'+
   '<div class="hv-p">'+fp(r.p)+' '+pc(r.h24)+'</div>'+
-  '<div class="hv-pills"><span class="hv-pill">⚡ Heat '+Math.round(r.ht||0)+'</span><span class="hv-pill">🛡️ Risk '+r.rs+'</span></div></div>'+spark(r)+'</div>'}
+  '<div class="hv-pills"><span class="hv-pill">'+PSI("bolt",12)+' Heat '+Math.round(r.ht||0)+'</span><span class="hv-pill">'+PSI("shield",12)+' Risk '+r.rs+'</span></div></div>'+spark(r)+'</div>'}
 function topCard(o,i){
   var r=E[key(o.c,o.a)]||{},medal=["🥇","🥈","🥉"][i]||"#"+(i+1);
   return'<div class="hv-card" data-hc="'+esc(o.c)+'" data-ha="'+esc(o.a)+'" role="button" tabindex="0" style="animation-delay:'+(i*60)+'ms">'+
-  '<span class="hv-rank">'+medal+'</span><span class="hv-n">👁 '+(+o.n||0)+'</span>'+av({img:r.img,s:o.s})+
+  '<span class="hv-rank">'+medal+'</span><span class="hv-n">'+PSI("eye",12)+' '+(+o.n||0)+'</span>'+av({img:r.img,s:o.s})+
   '<div class="hv-sym">'+esc(o.s||r.s||"?")+'</div>'+chain(o.c)+
   '<div class="hv-p">'+(r.p?fp(r.p)+' '+pc(r.h24):'&nbsp;')+'</div>'+spark(r)+'</div>'}
 function draw(){
-  var h="";
-  if(tod)h+='<div class="hv-hd"><span class="hv-t">⭐ Hot now</span><span class="hv-s">High Heat · lower Risk · not advice · line = 24h trend</span></div>'+hotCard(tod);
-  if(top.length)h+='<div class="hv-hd"><span class="hv-t">🔥 Most scanned today</span><span class="hv-s">👁 = scans</span></div><div class="hv-strip">'+top.map(topCard).join("")+'</div>';
+  var h="",st=shown();
+  if(tod)h+='<div class="hv-hd"><span class="hv-t">'+PSI("star",16)+' Hot now</span><span class="hv-s">Organic pick, not a paid slot · high Heat, lower Risk · not advice</span></div>'+hotCard(tod);
+  if(st.length)h+='<div class="hv-hd"><span class="hv-t">'+PSI("flame",16)+' Most scanned today</span><span class="hv-s">'+PSI("eye",12)+' = scans</span></div><div class="hv-strip">'+st.map(topCard).join("")+'</div>';
   bar.innerHTML=h;bar.style.display=h?"block":"none";
 }
 function pick(){
   if(tod||typeof D==="undefined"||!D||!D.length)return;
-  var best=null;D.forEach(function(r){if(r.rs>=75&&r.l>=50000&&(!best||r.ht>best.ht))best=r});
+  var best=null;D.forEach(function(r){if(r.rs>=75&&r.l>=50000&&r.ht>=MIN_HEAT&&(!best||r.ht>best.ht))best=r});
   if(best){tod=best;E[key(best.c,best.addr)]=best;draw()}
 }
 var n=0,iv=setInterval(function(){pick();if(tod||++n>15)clearInterval(iv)},2000);

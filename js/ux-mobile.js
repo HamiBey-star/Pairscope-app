@@ -6,9 +6,9 @@ var safeC=function(s){return s>=75?"#2ecc71":s>=50?"#f5c542":"#ff5c5c"};
 document.addEventListener("click",function(e){var t=e.target;if(t.closest&&t.closest("button,.star,.tab,.chip,tbody tr"))hap(7)},true);
 
 /* bottom nav */
-var N=[["trending","🔥","Trending"],["new","🆕","New"],["featured","🌟","Featured"],["surge","⚡","Surges"],["check","🛡️","Checker"],["watch","⭐","Watchlist"]];
+var N=[["trending","flame","Trending"],["new","new","New"],["featured","star","Featured"],["surge","bolt","Surges"],["check","shield","Checker"],["watch","star","Watchlist"]];
 var nav=document.createElement("div");nav.id="psnav";
-nav.innerHTML=N.map(function(n){return'<button type="button" data-n="'+n[0]+'"><i>'+n[1]+'</i>'+n[2]+'</button>'}).join("");
+nav.innerHTML=N.map(function(n){return'<button type="button" data-n="'+n[0]+'"><i>'+PSI(n[1],22)+'</i>'+n[2]+'</button>'}).join("");
 document.body.appendChild(nav);
 nav.onclick=function(e){var b=e.target.closest("button");if(!b)return;var t=document.querySelector('#tabs [data-m="'+b.getAttribute("data-n")+'"]');if(t)t.click();window.scrollTo({top:0,behavior:"smooth"})};
 function navSync(){var on=document.querySelector("#tabs .tab.on"),m=on&&on.getAttribute("data-m");Array.prototype.forEach.call(nav.children,function(b){b.className=b.getAttribute("data-n")===m?"on":""})}
