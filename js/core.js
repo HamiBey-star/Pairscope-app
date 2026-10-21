@@ -263,7 +263,7 @@ document.querySelector("thead").onclick=function(e){var k=e.target.getAttribute(
 $("body").onclick=function(e){var ca=e.target.getAttribute("data-ca");if(ca){var el=e.target,old=el.textContent,done=function(){el.textContent="✓ Copied";setTimeout(function(){el.textContent=old},1200)};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ca).then(done,function(){prompt("Copy token address",ca)})}else{prompt("Copy token address",ca)}return}var w=e.target.getAttribute("data-w");if(w){var i=W.indexOf(w);if(i>-1)W.splice(i,1);else W.push(w);saveW();tabs();if(mode==="watch"){D=D.filter(function(r){return W.indexOf(key(r))>-1});chips()}render();return}
 var tr=e.target.closest("tr");if(tr&&tr.getAttribute("data-i"))openD(+tr.getAttribute("data-i"))};
 $("detail").onclick=function(e){if(e.target.getAttribute("data-copy-addr")&&cur){var addr=cur.addr;function copied(){e.target.textContent="✓ Address copied"}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(addr).then(copied,function(){prompt("Copy token address",addr)})}else{prompt("Copy token address",addr)}return}
-if(e.target.id==="shr"&&cur){var u=location.origin+location.pathname+"?c="+encodeURIComponent(cur.c)+"&a="+encodeURIComponent(cur.addr),b=e.target;
+if(e.target.id==="shr"&&cur){var u=location.origin+"/s?c="+encodeURIComponent(cur.c)+"&a="+encodeURIComponent(cur.addr),b=e.target;
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){b.textContent="✓ Link copied"},function(){prompt("Copy this link",u)})}
   else if(navigator.share){navigator.share({title:"PairScope: "+cur.s,url:u}).catch(function(){})}
   else{prompt("Copy this link",u)}
@@ -400,7 +400,7 @@ function verdictOf(r){
   var lvl=((cs!==undefined&&cs<55)||(rs!==undefined&&rs<40))?3:((cs!==undefined&&cs<80)||(rs!==undefined&&rs<70)||flags.length>=2||cs===undefined)?2:1;
   return{lvl:lvl,flags:flags};
 }
-function shareUrl(r){return location.origin+location.pathname+"?scan="+encodeURIComponent(r.addr)+"&c="+encodeURIComponent(r.c)}
+function shareUrl(r){return location.origin+"/s?scan="+encodeURIComponent(r.addr)+"&c="+encodeURIComponent(r.c)} /* /s = link-preview page (functions/s.js), then opens the app */
 function ckReport(r){
   var v=verdictOf(r);
   return "PairScope report: "+(r.q?r.s+"/"+r.q:r.s)+" ("+r.c+")\nVerdict: "+VL[v.lvl]+"\nContract scan: "+(r.cs!==undefined?r.cs+"/100":"n/a")+(r.rs!==undefined?" · Market risk: "+r.rs+"/100":"")+(r.l?" · Liquidity "+fm(r.l):"")+(r.t?" · Age "+fage(r.t):"")+"\n"+v.flags.slice(0,4).map(function(f){return"- "+f}).join("\n")+"\nCheck it yourself: "+shareUrl(r)+"\nNot financial advice.";

@@ -18,7 +18,7 @@
     else{var t=d.createElement("textarea");t.value=PSP_CA;d.body.appendChild(t);t.select();try{d.execCommand("copy");done()}catch(e){}d.body.removeChild(t)}
   };
   /* share $PSP: X, Telegram, WhatsApp, native share / copy link */
-  var shareLink=location.origin+location.pathname+"?scan="+encodeURIComponent(PSP_CA)+"&c="+encodeURIComponent(PSP_CHAIN);
+  var shareLink=location.origin+"/psp"; /* /psp has the $PSP preview card (psp.html + og-psp.jpg) and then opens the live scan */
   var shareText="$PSP is the community coin of PairScope, the free DEX scanner with built-in contract safety checks. Check it yourself:";
   g("pspshare").hidden=false;
   g("pspx").href="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareText)+"&url="+encodeURIComponent(shareLink);
