@@ -25,7 +25,7 @@
   g("psptg").href="https://t.me/share/url?url="+encodeURIComponent(shareLink)+"&text="+encodeURIComponent(shareText);
   g("pspwa").href="https://wa.me/?text="+encodeURIComponent(shareText+" "+shareLink);
   g("pspsharebtn").onclick=function(){
-    var b=this,done=function(){b.textContent="Link copied ✓";setTimeout(function(){b.textContent="🔗 Share / Copy link"},1800)};
+    var b=this,done=function(){b.textContent="Link copied ✓";setTimeout(function(){b.textContent="🔗 Share"},1800)};
     if(navigator.share){navigator.share({title:"$PSP on PairScope",text:shareText,url:shareLink}).catch(function(){});return}
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(shareLink).then(done,function(){prompt("Copy this link",shareLink)})}
     else{prompt("Copy this link",shareLink)}
