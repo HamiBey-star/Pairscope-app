@@ -30,11 +30,22 @@
 <meta name="apple-mobile-web-app-title" content="PairScope">
 </head>
 <body>
-  <form action="/wallet.html" method="get" style="max-width:520px;margin:16px auto;display:flex;gap:8px;padding:0 12px">
-  <input name="address" type="text" placeholder="Paste a Solana wallet address" required
+ <div style="max-width:520px;margin:16px auto;display:flex;gap:8px;padding:0 12px">
+  <input id="wsearch" type="text" placeholder="Paste a Solana wallet address"
     style="flex:1;min-width:0;padding:12px;border:1px solid #888;border-radius:8px;font-size:16px">
-  <button type="submit" style="padding:12px 18px;border:0;border-radius:8px;font-size:16px;cursor:pointer">Look up</button>
-</form>
+  <button type="button" id="wgo"
+    style="padding:12px 18px;border:0;border-radius:8px;font-size:16px;cursor:pointer">Look up</button>
+</div>
+<script>
+  function goWallet() {
+    var v = document.getElementById("wsearch").value.trim();
+    if (v) window.location.href = "/wallet?address=" + encodeURIComponent(v);
+  }
+  document.getElementById("wgo").addEventListener("click", goWallet);
+  document.getElementById("wsearch").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") goWallet();
+  });
+</script>
 <noscript><p style="padding:16px">PairScope needs JavaScript to load live DEX data.</p></noscript>
 <a class="sr skip" href="#body">Skip to results</a>
 <div class="wrap">
