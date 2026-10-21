@@ -174,7 +174,9 @@
       tr.appendChild(el("td", t.side === 0 ? "buy" : "sell", t.side === 0 ? "Buy" : "Sell"));
 
       var tok = el("td");
-      var a = el("a", "", short(t.pair_address));
+     var info = (d.tokens || {})[t.pair_address];
+      var a = el("a", "", info && info.symbol ? info.symbol : short(t.pair_address));
+      if (info && info.name) a.title = info.name;
       a.href = "https://solscan.io/token/" + encodeURIComponent(t.pair_address);
       a.target = "_blank"; a.rel = "noopener";
       tok.appendChild(a);
