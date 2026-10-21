@@ -43,16 +43,32 @@ function cmpShow(){if(CP.length<2){modal('<h3>⚖ Compare</h3><p class="q">Open 
   modal('<h3>⚖ Compare</h3><div style="overflow-x:auto"><table><thead><tr><th></th>'+CP.map(function(r){return'<th>'+X(r.s)+' <span class="q">'+X(r.c)+'</span></th>'}).join("")+'</tr></thead><tbody>'+rows.map(function(x){return'<tr><td class="q">'+x[0]+'</td>'+CP.map(function(r){return'<td>'+x[1](r)+'</td>'}).join("")+'</tr>'}).join("")+'</tbody></table></div><button class="chip" data-x="cclr" style="margin-top:10px">Clear</button>')}
 
 /* share link + image card */
-function link(r){return location.href.split("#")[0]+"#pair="+encodeURIComponent(r.c)+"/"+encodeURIComponent(r.addr)}
-function share(r){var c=document.createElement("canvas");c.width=1000;c.height=525;var g=c.getContext("2d"),gr=g.createLinearGradient(0,0,1000,525);gr.addColorStop(0,"#0b1220");gr.addColorStop(1,"#14264a");g.fillStyle=gr;g.fillRect(0,0,1000,525);
+function link(r){return location.origin+"/s?c="+encodeURIComponent(r.c)+"&a="+encodeURIComponent(r.addr)} /* /s = link-preview page (functions/s.js), then opens the pair */
+/* coin picture for the share card: via our own /img proxy first (always exportable), then direct if CORS allows */
+var CL={};
+function cardLogo(r,cb){var k=r.c+":"+r.addr;if(k in CL){cb(CL[k]);return}
+  var src=[],u=[],i=0,done=0,tm;
+  if(/^https:\/\//.test(r.img||""))src.push(r.img);
+  if(r.c&&r.addr)src.push("https://dd.dexscreener.com/ds-data/tokens/"+encodeURIComponent(r.c)+"/"+encodeURIComponent(r.addr)+".png");
+  src.forEach(function(s){u.push({s:"/img?u="+encodeURIComponent(s),x:0});u.push({s:s,x:1})});
+  function fin(im){if(done)return;done=1;clearTimeout(tm);CL[k]=im;cb(im)}
+  tm=setTimeout(function(){fin(null)},3500);
+  (function next(){if(done)return;if(i>=u.length)return fin(null);var o=u[i++],m=new Image();if(o.x)m.crossOrigin="anonymous";m.referrerPolicy="no-referrer";m.onload=function(){fin(m)};m.onerror=next;m.src=o.s})()}
+function share(r){cardLogo(r,function(im){var c=document.createElement("canvas");c.width=1000;c.height=525;var g=c.getContext("2d"),gr=g.createLinearGradient(0,0,1000,525);gr.addColorStop(0,"#0b1220");gr.addColorStop(1,"#14264a");g.fillStyle=gr;g.fillRect(0,0,1000,525);
   g.fillStyle="#e6e8ea";g.font="700 64px system-ui,sans-serif";g.fillText(r.s,50,120);g.fillStyle="#8b95a1";g.font="28px system-ui,sans-serif";g.fillText(r.c+"  ·  age "+fage(r.t),50,168);
   g.fillStyle="#e6e8ea";g.font="700 54px system-ui,sans-serif";g.fillText(fprice(r.p),50,260);g.fillStyle=r.h24>=0?"#2ecc71":"#ff5c5c";g.font="700 40px system-ui,sans-serif";g.fillText("24h "+sg(r.h24),50,320);
   g.fillStyle="#4da3ff";g.font="700 40px system-ui,sans-serif";g.fillText("Heat "+r.ht+(r.rs!=null?"   Risk "+r.rs:""),50,390);g.fillStyle="#8b95a1";g.font="26px system-ui,sans-serif";g.fillText("Liq "+fm(r.l)+"   Vol "+fm(r.v),50,440);g.fillStyle="#00e0b8";g.font="700 30px system-ui,sans-serif";g.fillText("PairScope",50,490);
+  /* coin picture (falls back to a letter avatar like the table rows) */
+  var cx=800,cy=235,R=125;g.save();g.beginPath();g.arc(cx,cy,R,0,6.2832);g.closePath();g.clip();
+  if(im){var s=Math.min(im.width,im.height)||1;g.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,cx-R,cy-R,2*R,2*R)}
+  else{var sy=String(r.s||"?"),h=0,j;for(j=0;j<sy.length;j++)h=(h*31+sy.charCodeAt(j))%360;g.fillStyle="hsl("+h+",45%,38%)";g.fillRect(cx-R,cy-R,2*R,2*R);g.fillStyle="#fff";g.font="700 130px system-ui,sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText((sy.replace(/^[^A-Za-z0-9]+/,"").charAt(0)||"?").toUpperCase(),cx,cy+6);g.textAlign="left";g.textBaseline="alphabetic"}
+  g.restore();g.lineWidth=8;g.strokeStyle="#00e0b8";g.beginPath();g.arc(cx,cy,R+8,0,6.2832);g.stroke();
+  g.fillStyle="#8b95a1";g.font="26px system-ui,sans-serif";g.textAlign="right";g.fillText("pairscope.online",950,490);g.textAlign="left";
   var u=link(r);c.toBlob(function(b){try{var f=new File([b],r.s+"-pairscope.png",{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],text:r.s+" on PairScope",url:u}).catch(function(){});return}}catch(e){}
-    try{navigator.clipboard.writeText(u).catch(function(){})}catch(e){}var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=r.s+"-pairscope.png";a.click();toast("Link copied, image card saved")})}
+    try{navigator.clipboard.writeText(u).catch(function(){})}catch(e){}var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=r.s+"-pairscope.png";a.click();toast("Link copied, image card saved")})})}
 
 /* detail action bar */
-var _o3=openR;openR=function(r){_o3(r);try{var bar=mk("div","pxbar",'<button class="chip" data-x="sh">🔗 Share</button><button class="chip" data-x="pb">💼 Paper buy</button><button class="chip" data-x="cm">⚖ Compare</button>');bar.R=r;var g=$("grab");if(g)g.after(bar);else dt.prepend(bar)}catch(e){}};
+var _o3=openR;openR=function(r){_o3(r);try{var bar=mk("div","pxbar",'<button class="chip" data-x="sh">🔗 Share</button><button class="chip" data-x="pb">💼 Paper buy</button><button class="chip" data-x="cm">⚖ Compare</button>');bar.R=r;try{cardLogo(r,function(){})}catch(e){}var g=$("grab");if(g)g.after(bar);else dt.prepend(bar)}catch(e){}};
 
 /* csv */
 function csv(){var rs=rowsOn().map(function(t){return D[+t.getAttribute("data-i")]}).filter(Boolean);if(!rs.length){toast("Nothing to export");return}

@@ -17,6 +17,9 @@ Not financial advice.
 
 - Token share links are `/s?scan=<address>&c=<chain>` and `/s?c=<chain>&a=<address>`. `functions/s.js` (Cloudflare Pages Function) gives link-preview bots a token-specific card (name, price, 24h, liquidity, token icon from DexScreener) and sends everyone else straight to the app. `_routes.json` makes sure only `/s` runs the function. Needs a Git-connected Pages deploy (a plain drag-and-drop upload ignores `functions/`).
 
+- Share card (`share()` in `js/tools.js`) draws the coin picture. It loads it through `functions/img.js` (/img, DexScreener hosts only) so the browser can export the image, with a letter avatar as fallback.
+- Cache busting: `index.html` loads css/js with `?v=20261021b`. Change that value (search and replace) whenever you redeploy so phones don't keep old files.
+
 ## Before you deploy
 - `og.jpg` (share image) must stay in the repo root; index.html points to https://pairscope.online/og.jpg
 - Attach pairscope.online as a custom domain in Cloudflare
