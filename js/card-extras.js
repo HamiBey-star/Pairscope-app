@@ -12,7 +12,7 @@ X:['<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hid
 Telegram:['<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>','#26A5E4'],
 Website:['<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2c2.8 2.9 4.2 6.2 4.2 10S14.800 19.100 12 22c-2.800-2.900-4.200-6.200-4.200-10S9.200 4.900 12 2z"/></svg>','var(--accent)'],
 Discord:['<span style="font-size:10px;font-weight:700">DC</span>','#7983f5']};
-function socHTML(r){var s=SOC[key(r)];if(!s&&s!==undefined)return"";if(s===undefined)return'<span style="color:var(--muted)">Loading links…</span>';
+function socHTML(r){var s=SOC[key(r)];if(!s&&s!==undefined)return"";if(s===undefined)return'<span style="color:var(--muted)">Loading links\u2026</span>';
   if(!s.length)return'<span style="color:var(--down);font-weight:600">No socials listed</span>';
   return'<div style="display:flex;gap:8px;align-items:center">'+s.map(function(x){return'<a data-px="soc" target="_blank" rel="noopener" aria-label="'+x[0]+'" title="'+x[0]+'" href="'+esc(x[1])+'" style="width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;text-decoration:none;color:'+(ICO[x[0]]||ICO.Website)[1]+'">'+(ICO[x[0]]||ICO.Website)[0]+'</a>'}).join("")+'</div>'}
 function queue(r){var k=key(r);if(SOC[k]!==undefined||pend[k]||!r.addr)return;pend[k]=1;Q.push(r);clearTimeout(tmr);tmr=setTimeout(flush,400)}
@@ -45,14 +45,14 @@ function secParse(t,isSol){
     mint:isSol?stt(t.mintable,t.mint_authority||t.mintAuthority):flg(t.is_mintable),
     frz:isSol?stt(t.freezable,t.freeze_authority||t.freezeAuthority):flg(t.transfer_pausable)}}
 function secHTML(r){
-  var s=SEC[key(r)];if(s===undefined)return'<span style="color:var(--muted);font-size:12px">Loading security data…</span>';
+  var s=SEC[key(r)];if(s===undefined)return'<span style="color:var(--muted);font-size:12px">Loading security data\u2026</span>';
   if(!s)return'<span style="color:var(--muted);font-size:12px">Security data unavailable for this token</span>';
   var tp=s.top===null?null:Math.round(s.top*100);
-  return chip("Holders "+(s.hc===null?"–":s.hc.toLocaleString()),MU)
-   +chip("Top 10 "+(tp===null?"–":tp+"%"),tp===null?MU:tp>=50?RD:tp>=30?AM:GR)
-   +chip(s.mint===null?"Mint –":s.mint?"Mint active":"Mint revoked",s.mint===null?MU:s.mint?RD:GR)
-   +(s.sol?chip(s.frz===null?"Freeze –":s.frz?"Freeze active":"Freeze revoked",s.frz===null?MU:s.frz?RD:GR)
-          :chip(s.frz===null?"Pause –":s.frz?"Pausable":"Not pausable",s.frz===null?MU:s.frz?RD:GR))}
+  return chip("Holders "+(s.hc===null?"\u2013":s.hc.toLocaleString()),MU)
+   +chip("Top 10 "+(tp===null?"\u2013":tp+"%"),tp===null?MU:tp>=50?RD:tp>=30?AM:GR)
+   +chip(s.mint===null?"Mint \u2013":s.mint?"Mint active":"Mint revoked",s.mint===null?MU:s.mint?RD:GR)
+   +(s.sol?chip(s.frz===null?"Freeze \u2013":s.frz?"Freeze active":"Freeze revoked",s.frz===null?MU:s.frz?RD:GR)
+          :chip(s.frz===null?"Pause \u2013":s.frz?"Pausable":"Not pausable",s.frz===null?MU:s.frz?RD:GR))}
 function queueSec(r){
   var k=key(r),ok=r.c==="solana"||(typeof GP_CHAIN!=="undefined"&&GP_CHAIN[r.c]);
   if(SEC[k]!==undefined||sp[k]||!r.addr)return;
@@ -78,10 +78,10 @@ function html(r){
   return '<div class="pxh">'+(dead?'<span class="pxr">RUGGED</span>':'')+'<span class="pxk">FDV <b>'+fm(r.f)+'</b></span><span class="pxk">Age <b>'+fage(r.t)+'</b></span><span class="pxk">Txns <b>'+(r.tx||0).toLocaleString()+'</b></span></div>'
   +'<div class="pxg" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'+secHTML(r)+'</div>'
   +'<div class="pxt" role="group" aria-label="Timeframe">'+TF.map(function(x){return '<button type="button" data-px="tf" data-v="'+x[0]+'" class="'+(x[0]===tf?'on':'')+'">'+x[0]+'</button>'}).join("")+'<b class="'+(up?'up':'down')+'">'+(up?'+':'')+ch.toFixed(2)+'%</b></div>'
-  +'<div class="pxl"><span>Buys '+b.toLocaleString()+'</span><span>Vol '+fm(vol)+' · '+tf+'</span><span>Sells '+s.toLocaleString()+'</span></div>'
+  +'<div class="pxl"><span>Buys '+b.toLocaleString()+'</span><span>Vol '+fm(vol)+' \u00b7 '+tf+'</span><span>Sells '+s.toLocaleString()+'</span></div>'
   +'<div class="pxb"><i style="width:'+bp+'%"></i></div>'
   +'<div class="pxs" style="margin-top:8px;font-size:12px">'+socHTML(r)+'</div>'
-  +'<div class="pxa"><a data-px="buy" target="_blank" rel="noopener" href="'+esc(r.c==="solana"?"https://jup.ag/swap/SOL-"+encodeURIComponent(r.addr):r.url)+'">Quick buy</a><a data-px="dex" target="_blank" rel="noopener" href="'+esc(r.url)+'">Open in DEX</a><button type="button" data-px="alert">🔔 Alert</button><button type="button" data-px="share">Share</button></div>';
+  +'<div class="pxa"><a data-px="buy" target="_blank" rel="noopener" href="'+esc(r.c==="solana"?"https://jup.ag/swap/SOL-"+encodeURIComponent(r.addr):r.url)+'">Quick buy</a><a data-px="dex" target="_blank" rel="noopener" href="'+esc(r.url)+'">Open in DEX</a><button type="button" data-px="alert">\ud83d\udd14 Alert</button><button type="button" data-px="share">Share</button></div>';
 }
 function run(){
   if(busy||typeof D==="undefined"||typeof fm!=="function")return;busy=true;
