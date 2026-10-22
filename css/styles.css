@@ -305,6 +305,28 @@ th{font-size:12px}
 @media(max-width:700px){.psp .pca{box-sizing:border-box;max-width:100%;min-width:0}}
 /* active glow: bottom nav + top tabs */
 #psnav button{transition:color .2s,background .2s,box-shadow .2s}
+/* ===== card extras: paste at the END of styles.css ===== */
+.pxx{display:none}
+@media(max-width:700px){
+  /* the score on the card is a safety score (higher = safer), so label it that way */
+  tbody tr td:nth-child(12):before{content:"Safety 🛡️"}
+  tbody tr.pxd{border-color:rgba(255,92,92,.55)}
+  tbody tr td.pxx{display:block;grid-column:1/-1;text-align:left;white-space:normal;margin-top:8px;padding:8px 0 0;border-top:1px solid rgba(255,255,255,.07);font-size:12px}
+  .pxh{display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:var(--muted)}
+  .pxh b{color:var(--text)}
+  .pxr{background:rgba(255,92,92,.2);color:var(--down);font-weight:700;font-size:11px;padding:2px 8px;border-radius:99px}
+  .pxt{display:flex;gap:4px;margin-top:8px;align-items:center}
+  .pxt button{background:var(--bg);border:1px solid var(--line);color:var(--muted);border-radius:7px;padding:4px 10px;font-size:12px;cursor:pointer}
+  .pxt button.on{background:var(--accent);border-color:var(--accent);color:#04101f;font-weight:700}
+  .pxt b{margin-left:auto;font-size:15px}
+  .pxl{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin:8px 0 4px}
+  .pxb{height:7px;border-radius:9px;background:var(--down);overflow:hidden}
+  .pxb i{display:block;height:100%;background:var(--up)}
+  .pxa{display:flex;gap:6px;margin-top:10px}
+  .pxa a,.pxa button{flex:1;text-align:center;text-decoration:none;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:10px;padding:9px 4px;font-size:12px;font-weight:600;cursor:pointer}
+  .pxa a:first-child{background:var(--up);border-color:var(--up);color:#032012}
+  .pxt button:focus-visible,.pxa a:focus-visible,.pxa button:focus-visible{outline:2px solid var(--accent)}
+}
 #psnav button.on{
   color:#fff;
   background:linear-gradient(135deg,rgba(0,224,184,.22),rgba(77,163,255,.22));
