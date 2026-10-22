@@ -1,1 +1,1 @@
-{"version":1,"include":["/s","/img"],"exclude":[]}
+{"version":1,"include":["/s","/img","/api/*"],"exclude":[]}
