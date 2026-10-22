@@ -17,15 +17,16 @@ function draw(fresh){
     return'<a class="'+(fresh&&i===0?"fresh":"")+'" target="_blank" rel="noopener" href="https://dexscreener.com/solana/'+x.m+'"><div><span class="pn">'+E(x.n)+'</span> <span class="pq">'+E(x.s)+'</span></div><div class="pr">MC '+x.mc+' SOL<span>'+(x.b>0?"Dev bought "+x.b+" SOL · ":"")+ago(x.t)+'</span></div></a>'}).join("")||'<div class="pq" style="padding-top:8px">Waiting for the next launch…</div>'}
 function connect(){
   if(ws&&ws.readyState<=1)return;stat.textContent="connecting…";
-  try{ws=new WebSocket("wss://pumpportal.fun/api/data")}catch(e){return}
-  ws.onopen=function(){retry=1000;fails=0;box.classList.add("on");stat.textContent="live";ws.send(JSON.stringify({method:"subscribeNewToken"}))};
+  var w;try{w=ws=new WebSocket("wss://pumpportal.fun/api/data")}catch(e){stat.textContent="blocked: "+(e&&e.name||"error");return}
+  var to=setTimeout(function(){if(w.readyState===0){stat.textContent="no response (8s)";try{w.close()}catch(x){}}},8000);
+  ws.onopen=function(){clearTimeout(to);retry=1000;fails=0;box.classList.add("on");stat.textContent="live";ws.send(JSON.stringify({method:"subscribeNewToken"}))};
   ws.onmessage=function(ev){
     var d;try{d=JSON.parse(ev.data)}catch(e){return}
     if(!d||d.txType!=="create"||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(d.mint||""))return;
     items.unshift({m:d.mint,n:String(d.name||"?").slice(0,32),s:String(d.symbol||"").slice(0,12),mc:(+d.marketCapSol||0).toFixed(1),b:+(+d.solAmount||0).toFixed(2),t:Date.now()});
     items=items.slice(0,8);
     if(!rd){rd=setTimeout(function(){rd=0;draw(true)},300)}};
-  ws.onclose=function(){box.classList.remove("on");fails++;stat.textContent=fails>=3?"can't connect":"reconnecting…";ws=null;if(visible()){clearTimeout(rt);rt=setTimeout(connect,retry);retry=Math.min(retry*2,30000)}};
+  ws.onclose=function(ev){clearTimeout(to);box.classList.remove("on");fails++;stat.textContent=(fails>=2?"closed, code "+(ev&&ev.code):"reconnecting…");ws=null;if(visible()){clearTimeout(rt);rt=setTimeout(connect,retry);retry=Math.min(retry*2,30000)}};
   ws.onerror=function(){try{ws.close()}catch(e){}};
 }
 function drop(){clearTimeout(rt);if(ws){ws.onclose=null;try{ws.close()}catch(e){}ws=null}box.classList.remove("on");stat.textContent="paused"}
