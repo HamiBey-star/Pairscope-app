@@ -25,14 +25,14 @@ window.__spark=spark;
 function hotCard(r){
   return'<div class="hv-card hv-hot" data-hc="'+esc(r.c)+'" data-ha="'+esc(r.addr)+'" role="button" tabindex="0">'+av(r)+
   '<div style="min-width:0;flex:1"><div class="hv-sym">'+esc(r.s)+' '+chain(r.c)+'</div>'+
-  '<div class="hv-p">'+fp(r.p)+' '+pc(r.h24)+'</div>'+
+  '<div class="hv-p">'+fp(r.p)+' '+pc(r.h24)+'</div>'+'<div class="rx-bar" data-token="'+esc(r.addr)+'"></div>'+
   '<div class="hv-pills"><span class="hv-pill">'+PSI("bolt",12)+' Heat '+Math.round(r.ht||0)+'</span><span class="hv-pill">'+PSI("shield",12)+' Risk '+r.rs+'</span></div></div>'+spark(r)+'</div>'}
 function topCard(o,i){
   var r=E[key(o.c,o.a)]||{},medal=["🥇","🥈","🥉"][i]||"#"+(i+1);
   return'<div class="hv-card" data-hc="'+esc(o.c)+'" data-ha="'+esc(o.a)+'" role="button" tabindex="0" style="animation-delay:'+(i*60)+'ms">'+
   '<span class="hv-rank">'+medal+'</span><span class="hv-n">'+PSI("eye",12)+' '+(+o.n||0)+'</span>'+av({img:r.img,s:o.s})+
   '<div class="hv-sym">'+esc(o.s||r.s||"?")+'</div>'+chain(o.c)+
-  '<div class="hv-p">'+(r.p?fp(r.p)+' '+pc(r.h24):'&nbsp;')+'</div>'+spark(r)+'</div>'}
+  '<div class="hv-p">'+(r.p?fp(r.p)+' '+pc(r.h24):'&nbsp;')+'</div>'+'<div class="rx-bar" data-token="'+esc(o.a)+'"></div>'+spark(r)+'</div>'}
 function draw(){
   var h="",st=shown();
   if(tod)h+='<div class="hv-hd"><span class="hv-t">'+PSI("star",16)+' Hot now</span><span class="hv-s">Organic pick, not a paid slot · high Heat, lower Risk · not advice</span></div>'+hotCard(tod);
