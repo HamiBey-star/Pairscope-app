@@ -1,4 +1,4 @@
-const REACTIONS = [
+var REACTIONS = [
   { type: 'rocket', icon: '🚀' },
   { type: 'fire', icon: '🔥' },
   { type: 'poop', icon: '💩' },
@@ -6,36 +6,36 @@ const REACTIONS = [
 ];
 
 function renderReactions(el, data) {
-  const token = el.dataset.token;
-  const counts = (data && data.counts) || {};
-  const mine = (data && data.mine) || [];
-  el.innerHTML = REACTIONS.map(x =>
-    <button class="rx ${mine.includes(x.type) ? 'on' : ''}" data-type="${x.type}">${x.icon} <b>${counts[x.type] || 0}</b></button>
-  ).join('');
-  el.querySelectorAll('.rx').forEach(b => b.onclick = async (e) => {
-    e.stopPropagation();
-    try {
-      await fetch('/api/votes', {
+  var token = el.dataset.token;
+  var counts = (data && data.counts) || {};
+  var mine = (data && data.mine) || [];
+  el.innerHTML = REACTIONS.map(function (x) {
+    return '<button class="rx ' + (mine.indexOf(x.type) > -1 ? 'on' : '') +
+      '" data-type="' + x.type + '">' + x.icon + ' <b>' + (counts[x.type] || 0) + '</b></button>';
+  }).join('');
+  el.querySelectorAll('.rx').forEach(function (b) {
+    b.onclick = function (e) {
+      e.stopPropagation();
+      fetch('/api/votes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, type: b.dataset.type })
-      });
-    } catch (err) {}
-    loadReactions(el);
+        body: JSON.stringify({ token: token, type: b.dataset.type })
+      }).then(function () { loadReactions(el); }).catch(function () {});
+    };
   });
 }
 
-async function loadReactions(el) {
+function loadReactions(el) {
   if (!el.dataset.token) return;
   renderReactions(el, null);
-  try {
-    const r = await fetch('/api/votes?token=' + encodeURIComponent(el.dataset.token)).then(x => x.json());
-    renderReactions(el, r);
-  } catch (e) {}
+  fetch('/api/votes?token=' + encodeURIComponent(el.dataset.token))
+    .then(function (x) { return x.json(); })
+    .then(function (r) { renderReactions(el, r); })
+    .catch(function () {});
 }
 
 function scanReactions() {
-  document.querySelectorAll('.rx-bar:not([data-ready])').forEach(el => {
+  document.querySelectorAll('.rx-bar:not([data-ready])').forEach(function (el) {
     el.dataset.ready = '1';
     loadReactions(el);
   });
