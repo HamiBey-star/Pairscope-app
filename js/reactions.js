@@ -100,3 +100,35 @@ setInterval(function () {
   var n = table.querySelectorAll('tr[data-i]').length;
   moreBtn.style.display = n >= window.LIMIT ? 'block' : 'none';
 }, 1000);
+(function () {
+  var ua = navigator.userAgent || '';
+  var isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
+  var inPhantom = !!(window.phantom && window.phantom.solana && window.phantom.solana.isPhantom);
+  try { if (localStorage.getItem('hidePhantomBar')) return; } catch (e) {}
+  if (!isMobile || inPhantom) return;
+
+  var url = location.origin + location.pathname + location.search;
+  var link = 'https://phantom.app/ul/browse/' + encodeURIComponent(url) +
+    '?ref=' + encodeURIComponent(location.origin);
+
+  var bar = document.createElement('div');
+  bar.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;' +
+    'padding:8px 12px;background:#ab9ff2;color:#1c1c1c;font-size:14px;font-weight:600;';
+
+  var a = document.createElement('a');
+  a.href = link;
+  a.textContent = 'Open in Phantom to trade';
+  a.style.cssText = 'color:#1c1c1c;text-decoration:underline;';
+
+  var x = document.createElement('button');
+  x.textContent = '\u00d7';
+  x.style.cssText = 'border:0;background:transparent;font-size:20px;color:#1c1c1c;cursor:pointer;';
+  x.onclick = function () {
+    try { localStorage.setItem('hidePhantomBar', '1'); } catch (e) {}
+    bar.remove();
+  };
+
+  bar.appendChild(a);
+  bar.appendChild(x);
+  document.body.insertBefore(bar, document.body.firstChild);
+})();
