@@ -41,12 +41,13 @@ function paintAll(token) {
 
 function scan() {
   // add a bar to every table row that has none
-  document.querySelectorAll('tr[data-w]').forEach(function (tr) {
+ document.querySelectorAll('tr[data-i]').forEach(function (tr) {
     var td = tr.querySelector('td');
-    if (td && !td.querySelector('.rx-bar')) {
+    var s = tr.querySelector('[data-w]');
+    if (td && s && !td.querySelector('.rx-bar')) {
       var d = document.createElement('div');
       d.className = 'rx-bar';
-      d.dataset.token = tr.getAttribute('data-w');
+      d.dataset.token = s.getAttribute('data-w');
       td.appendChild(d);
     }
   });
