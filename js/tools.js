@@ -5,7 +5,8 @@ var X=function(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&am
 var bd=$("body"),dt=$("detail"),tt,F=LS.g("ps_f",{liq:0,age:0,heat:0,safe:0}),PR=LS.g("ps_pr",{}),A=LS.g("ps_al",{on:0,move:15,heat:80}),BS=LS.g("ps_bs",{}),PT=LS.g("ps_pt",[]),CP=[];
 function mk(t,id,h){var e=document.createElement(t);e.id=id;if(h)e.innerHTML=h;return e}
 function toast(t){var e=$("pxt");e.textContent=t;e.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){e.classList.remove("on")},3200)}
-function modal(h){$("pxm").firstChild.innerHTML='<div style="text-align:right"><button class="chip" data-x="mc">✕ Close</button></div>'+h;$("pxm").classList.add("on")}
+var PV=false;
+function modal(h){PV=false;$("pxm").firstChild.innerHTML='<div style="text-align:right"><button class="chip" data-x="mc">✕ Close</button></div>'+h;$("pxm").classList.add("on")}
 function closeM(){$("pxm").classList.remove("on")}
 var sg=function(n){return(n>0?"+":"")+(+n||0).toFixed(1)+"%"},cl=function(n){return n>=0?"up":"dn"};
 
@@ -30,12 +31,42 @@ function alerts(){if(!A.on)return;D.forEach(function(r){var k=key(r);if(W.indexO
   var m=(r.p/b.p-1)*100,msg=Math.abs(m)>=A.move?r.s+" "+sg(m)+" since last check":(r.ht>=A.heat&&b.h<A.heat?r.s+" Heat reached "+r.ht:"");
   if(msg){fire(msg);BS[k]={p:r.p,h:r.ht,t:Date.now()}}else if(Date.now()-b.t>18e5)BS[k]={p:r.p,h:r.ht,t:Date.now()}});LS.s("ps_bs",BS)}
 
-/* paper trades */
+/* paper trading account: $10k virtual cash, buy/add, partial or full sell, realized + unrealized P/L */
+var PA=LS.g("ps_pa",null),PB=null,PSTART=10000;
+function savePA(){LS.s("ps_pa",PA)}
+if(!PA||!PA.pos){PA={cash:PSTART,pos:[],hist:[]};PT.forEach(function(p){var u=+p.u||0;if(u>0&&p.e>0){PA.pos.push({k:p.k,s:p.s,c:p.c,a:p.a,e:p.e,q:u/p.e,u:u,t:p.t,last:p.e});PA.cash-=u}});PA.cash=Math.max(PA.cash,0);savePA();try{localStorage.removeItem("ps_pt")}catch(e){}}
+var money=function(n){return(n>=0?"+":"-")+"$"+Math.abs(n).toFixed(2)};
 function prices(list){var by={};list.forEach(function(p){(by[p.c]=by[p.c]||[]).push(p.a)});return Promise.all(Object.keys(by).map(function(c){return fetch(B+"/tokens/v1/"+c+"/"+by[c].slice(0,30).join(",")).then(function(r){return r.json()}).catch(function(){return[]})})).then(function(a){var m={};dedupe([].concat.apply([],a).map(map)).forEach(function(r){m[key(r)]=r});return m})}
-function paperAdd(r){var a=parseFloat(prompt("Paper buy "+r.s+" at "+fprice(r.p)+"\nAmount in USD:","100"));if(!(a>0))return;PT.push({k:key(r),s:r.s,c:r.c,a:r.addr,e:r.p,u:a,t:Date.now()});LS.s("ps_pt",PT);toast("💼 Paper position opened")}
-function paperShow(){if(!PT.length){modal('<h3>💼 Paper trades</h3><p class="q">No positions yet. Open any pair and tap “Paper buy”. No wallet or real funds involved.</p>');return}
-  modal('<h3>💼 Paper trades</h3><p class="q">Loading prices…</p>');prices(PT).then(function(m){var tot=0,inv=0,h="";PT.forEach(function(p,i){var r=m[p.k],n=r?r.p:p.e,pl=(n/p.e-1)*100,d=p.u*pl/100;tot+=d;inv+=p.u;h+='<tr><td>'+X(p.s)+'</td><td>$'+p.u+'</td><td>'+fprice(p.e)+'</td><td>'+fprice(n)+'</td><td class="'+cl(pl)+'">'+sg(pl)+'</td><td class="'+cl(d)+'">'+(d>=0?"+":"-")+'$'+Math.abs(d).toFixed(2)+'</td><td><button class="chip" data-x="pdel" data-i="'+i+'" aria-label="Close position">✕</button></td></tr>'});
-    modal('<h3>💼 Paper trades</h3><div style="overflow-x:auto"><table><thead><tr><th>Token</th><th>Size</th><th>Entry</th><th>Now</th><th>P/L</th><th>P/L $</th><th></th></tr></thead><tbody>'+h+'</tbody></table></div><p>Total: <b class="'+cl(tot)+'">'+(tot>=0?"+":"-")+'$'+Math.abs(tot).toFixed(2)+'</b> on $'+inv.toFixed(0)+'</p><p class="q">Simulated only. Not financial advice.</p>')})}
+function paperAdd(r){if(!r||!(r.p>0)){toast("Price not available yet");return}PB=r;
+  modal('<h3>💼 Paper buy '+X(r.s)+'</h3><p class="q">Price '+fprice(r.p)+' · Cash $'+PA.cash.toFixed(2)+'</p><p><input id="pxa" type="number" inputmode="decimal" min="1" step="any" value="'+Math.min(100,Math.floor(PA.cash))+'" aria-label="Amount in USD"></p><p><button class="chip" data-x="pq" data-v="25">25%</button> <button class="chip" data-x="pq" data-v="50">50%</button> <button class="chip" data-x="pq" data-v="100">Max</button> <button class="chip" data-x="pconf">✓ Buy</button></p><p class="q">Simulated only. No wallet or real funds.</p>');
+  setTimeout(function(){var i=$("pxa");if(i)i.focus()},50)}
+function paperConfirm(){var r=PB,a=parseFloat($("pxa")&&$("pxa").value);if(!r||!(r.p>0))return toast("Price not available yet");if(!(a>0))return toast("Enter an amount above 0");if(a>PA.cash+1e-9)return toast("Not enough paper cash");
+  var k=key(r),q=a/r.p,x=PA.pos.filter(function(p){return p.k===k})[0];PA.cash-=a;
+  if(x){x.q+=q;x.u+=a;x.e=x.u/x.q;x.last=r.p}else PA.pos.push({k:k,s:r.s,c:r.c,a:r.addr,e:r.p,q:q,u:a,t:Date.now(),last:r.p});
+  savePA();PB=null;closeM();toast("💼 Bought $"+a.toFixed(2)+" of "+r.s)}
+function paperSell(i,f){var p=PA.pos[i];if(!p)return;var n=p.last||p.e,q=p.q*f,cost=p.u*f,out=q*n;PA.cash+=out;PA.hist.push({s:p.s,pl:out-cost,t:Date.now()});if(PA.hist.length>200)PA.hist.shift();
+  if(f>=0.999)PA.pos.splice(i,1);else{p.q-=q;p.u-=cost}savePA();toast("Sold "+Math.round(f*100)+"% of "+p.s+" ("+money(out-cost)+")");paperShow()}
+function paperShow(){
+  if(!PA.pos.length&&!PA.hist.length){modal('<h3>💼 Paper trades</h3><p class="q">No positions yet. Tap “Paper buy” on any row or pair. You start with $'+PSTART.toLocaleString()+' of virtual cash. No wallet or real funds involved.</p>');return}
+  modal('<h3>💼 Paper trades</h3><p class="q">Loading prices…</p>');
+  (PA.pos.length?prices(PA.pos):Promise.resolve({})).then(paperRender)}
+function liveMap(){var m={};try{D.forEach(function(r){m[key(r)]=r})}catch(e){}return m}
+function paperRender(m){var val=0,unr=0,h="";
+  PA.pos.forEach(function(p,i){var r=m[p.k];if(r&&r.p>0)p.last=r.p;var n=p.last||p.e,v=p.q*n,d=v-p.u,pl=(n/p.e-1)*100;val+=v;unr+=d;
+    h+='<tr><td>'+X(p.s)+'</td><td>$'+p.u.toFixed(0)+'</td><td>'+fprice(p.e)+'</td><td>'+fprice(n)+(r?'':' <span class="q" title="Live price unavailable, showing last known">•</span>')+'</td><td class="'+cl(pl)+'">'+sg(pl)+'</td><td class="'+cl(d)+'">'+money(d)+'</td><td style="white-space:nowrap"><button class="chip" data-x="psell" data-i="'+i+'" data-f="0.5">½</button> <button class="chip" data-x="psell" data-i="'+i+'" data-f="1">Sell</button></td></tr>'});
+  savePA();
+  var real=PA.hist.reduce(function(a,t){return a+t.pl},0),w=PA.hist.filter(function(t){return t.pl>0}).length,eq=PA.cash+val,tot=eq-PSTART;
+  modal('<h3>💼 Paper trades</h3><p>Equity <b>$'+eq.toFixed(2)+'</b> · Cash $'+PA.cash.toFixed(2)+' · Total <b class="'+cl(tot)+'">'+money(tot)+'</b></p>'+
+    (PA.pos.length?'<div style="overflow-x:auto"><table><thead><tr><th>Token</th><th>Size</th><th>Entry</th><th>Now</th><th>P/L</th><th>P/L $</th><th></th></tr></thead><tbody>'+h+'</tbody></table></div>':'<p class="q">No open positions. Tap “Paper buy” under any pair.</p>')+
+    '<p class="q">Open <span class="'+cl(unr)+'">'+money(unr)+'</span> · Realized <span class="'+cl(real)+'">'+money(real)+'</span>'+(PA.hist.length?' · Win rate '+Math.round(w/PA.hist.length*100)+'% ('+PA.hist.length+' closed)':'')+'</p>'+
+    '<p><button class="chip" data-x="prst">Reset $'+PSTART.toLocaleString()+'</button></p><p class="q">Simulated only. Ignores fees, slippage and liquidity. Not financial advice.</p>');
+  PV=true}
+/* Paper buy button on every table row (click does not open the detail view) */
+function rowBtns(){bd.querySelectorAll("tr[data-i]").forEach(function(tr){var td=tr.querySelector("td");if(td&&!td.querySelector(".pp-buy")){var b=document.createElement("button");b.className="chip pp-buy";b.type="button";b.textContent="💼 Paper buy";td.appendChild(b)}})}
+try{new MutationObserver(rowBtns).observe(bd,{childList:true})}catch(e){}rowBtns();
+document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest(".pp-buy");if(!b)return;e.stopPropagation();e.preventDefault();var tr=b.closest("tr"),r;try{r=D[+tr.getAttribute("data-i")]}catch(x){}paperAdd(r)},true);
+/* live refresh of the open paper panel from the table's own price data (no extra network calls) */
+setInterval(function(){if(PV&&$("pxm").classList.contains("on")&&PA.pos.length)paperRender(liveMap())},3000);
 
 /* compare */
 function cmpShow(){if(CP.length<2){modal('<h3>⚖ Compare</h3><p class="q">Open a pair and tap “Compare” on 2 or 3 pairs first.</p>');return}
@@ -88,7 +119,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
   else if(x==="ps"){var n=prompt("Preset name:");if(n){PR[n]=Object.assign({},F);LS.s("ps_pr",PR);syncUI();$("fpre").value=n}}
   else if(x==="pd"){var s=$("fpre").value;if(s){delete PR[s];LS.s("ps_pr",PR);syncUI()}}
   else if(x==="fr"){F={liq:0,age:0,heat:0,safe:0};LS.s("ps_f",F);syncUI();applyF()}
-  else if(x==="pdel"){PT.splice(+b.getAttribute("data-i"),1);LS.s("ps_pt",PT);paperShow()}
+  else if(x==="psell")paperSell(+b.getAttribute("data-i"),+b.getAttribute("data-f"));else if(x==="pconf")paperConfirm();else if(x==="pq"){var ia=$("pxa");if(ia)ia.value=(Math.floor(PA.cash*(+b.getAttribute("data-v"))/100*100)/100)}else if(x==="prst"){if(confirm("Reset paper account to $"+PSTART+"?")){PA={cash:PSTART,pos:[],hist:[]};savePA();paperShow()}}
   else if(x==="cclr"){CP=[];$("pxc").textContent=0;cmpShow()}
   else if(x==="sh"&&r)share(r);else if(x==="pb"&&r)paperAdd(r);
   else if(x==="cm"&&r){if(CP.some(function(p){return key(p)===key(r)}))CP=CP.filter(function(p){return key(p)!==key(r)});else if(CP.length>=3)return toast("Compare holds up to 3 pairs");else CP.push(Object.assign({},r));$("pxc").textContent=CP.length;toast("Comparing "+CP.length+" pair"+(CP.length>1?"s":""))}});
