@@ -32,9 +32,12 @@ export async function onRequestPost({ request, env }) {
   if (!TYPES.includes(body.type) || !OK.test(body.token || ''))
     return new Response('bad request', { status: 400 });
   const me = await voterId(request);
-  const del = await env.DB.prepare('DELETE FROM votes WHERE token=? AND voter=? AND type=?')
-    .bind(body.token, me, body.type).run();
-  if (!del.meta.changes)
+  const old = await env.DB.prepare('SELECT type FROM votes WHERE token=? AND voter=?')
+    .bind(body.token, me).all();
+  const same = old.results.some(function (r) { return r.type === body.type; });
+  await env.DB.prepare('DELETE FROM votes WHERE token=? AND voter=?')
+    .bind(body.token, me).run();
+  if (!same)
     await env.DB.prepare('INSERT INTO votes VALUES (?,?,?)').bind(body.token, me, body.type).run();
   return Response.json({ ok: true });
 }
