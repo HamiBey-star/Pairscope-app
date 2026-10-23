@@ -5,6 +5,7 @@ var REACTIONS = [
   { type: 'flag', icon: '🚩' }
 ];
 var CACHE = {};
+var ASKED = {};
 var timer = null;
 
 function paint(el) {
@@ -40,41 +41,47 @@ function paintAll(token) {
 }
 
 function scan() {
-  // add a bar to every table row that has none
- document.querySelectorAll('tr[data-i]').forEach(function (tr) {
+  document.querySelectorAll('tr[data-i]').forEach(function (tr) {
     var td = tr.querySelector('td');
     var s = tr.querySelector('[data-w]');
     if (td && s && !td.querySelector('.rx-bar')) {
       var d = document.createElement('div');
       d.className = 'rx-bar';
+      d.style.minHeight = '26px';
       d.dataset.token = s.getAttribute('data-w').split('|').pop();
       td.appendChild(d);
     }
   });
-  // fill all new bars with one request
-  var fresh = [];
+  var need = [];
   document.querySelectorAll('.rx-bar:not([data-ready])').forEach(function (el) {
     el.dataset.ready = '1';
-    if (el.dataset.token) { paint(el); fresh.push(el.dataset.token); }
+    var t = el.dataset.token;
+    if (!t) return;
+    paint(el);
+    if (!CACHE[t] && !ASKED[t]) { ASKED[t] = 1; need.push(t); }
   });
-  if (!fresh.length) return;
-  var uniq = fresh.filter(function (t, i) { return fresh.indexOf(t) === i; });
-  for (var i = 0; i < uniq.length; i += 50) {
+  for (var i = 0; i < need.length; i += 50) {
     (function (part) {
       fetch('/api/votes?tokens=' + encodeURIComponent(part.join(',')))
         .then(function (r) { return r.json(); })
         .then(function (d) {
           part.forEach(function (t) { if (d[t]) { CACHE[t] = d[t]; paintAll(t); } });
         })
-        .catch(function () {});
-    })(uniq.slice(i, i + 50));
+        .catch(function () { part.forEach(function (t) { delete ASKED[t]; }); });
+    })(need.slice(i, i + 50));
   }
 }
 
 function later() {
   clearTimeout(timer);
-  timer = setTimeout(scan, 150);
+  timer = setTimeout(scan, 400);
 }
 
-new MutationObserver(later).observe(document.documentElement, { childList: true, subtree: true });
+new MutationObserver(function (muts) {
+  for (var i = 0; i < muts.length; i++) {
+    var n = muts[i].target;
+    var el = n.nodeType === 1 ? n : n.parentElement;
+    if (!el || !el.closest || !el.closest('.rx-bar')) { later(); return; }
+  }
+}).observe(document.documentElement, { childList: true, subtree: true });
 scan();
