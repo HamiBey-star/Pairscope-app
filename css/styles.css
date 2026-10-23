@@ -346,3 +346,6 @@ th{font-size:12px}
   box-shadow:0 0 0 1px #00e0b8,0 0 18px rgba(0,224,184,.65);
 }
 @media(prefers-reduced-motion:reduce){#psnav button{transition:none}}
+.rx-bar{display:flex;gap:6px;margin-top:8px}
+.rx{background:rgba(255,255,255,.06);border:0;border-radius:999px;padding:4px 10px;color:#fff;font-size:13px;cursor:pointer}
+.rx.on{background:rgba(0,255,170,.18);box-shadow:0 0 0 1px #00ffaa inset}
