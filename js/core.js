@@ -114,7 +114,7 @@ function load(silent){
   .catch(function(){if(id!==reqId)return;if(!silent)$("body").innerHTML='<tr><td colspan="13" class="q" style="text-align:center;padding:24px">Could not load data. Check your connection.</td></tr>'})
   .then(function(){if(id===reqId)loading=false});
 }
-function render(){D.forEach(function(r){var c=csKnown(r);if(c)r.cs=c.s});
+function render(){window.__render=render;D.forEach(function(r){var c=csKnown(r);if(c)r.cs=c.s});
   var rows=D.filter(function(r){return(chain==="all"||r.c===chain)&&(!minLiq||r.l>=10000)&&(!onlyRk||r.rs>=75)});
   rows.sort(function(a,b){var x=a[sortK],y=b[sortK];return(x>y?1:x<y?-1:0)*dir});VIS=rows;setTimeout(scanVisible,0);
   $("body").innerHTML=rows.slice(0,window.LIMIT||40).map(function(r,n){
