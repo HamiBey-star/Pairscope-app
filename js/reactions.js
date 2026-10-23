@@ -85,3 +85,18 @@ new MutationObserver(function (muts) {
   }
 }).observe(document.documentElement, { childList: true, subtree: true });
 scan();
+window.LIMIT = 40;
+var moreBtn = document.createElement('button');
+moreBtn.textContent = 'Load more';
+moreBtn.style.cssText = 'display:none;margin:14px auto;padding:10px 22px;border-radius:999px;border:1px solid #00e0b8;background:transparent;color:#00e0b8;font-size:14px;cursor:pointer';
+moreBtn.onclick = function () {
+  window.LIMIT += 40;
+  if (window._render) window._render();
+};
+setInterval(function () {
+  var table = document.querySelector('table');
+  if (!table) return;
+  if (!moreBtn.parentNode) table.parentNode.insertBefore(moreBtn, table.nextSibling);
+  var n = table.querySelectorAll('tr[data-i]').length;
+  moreBtn.style.display = n >= window.LIMIT ? 'block' : 'none';
+}, 1000);
