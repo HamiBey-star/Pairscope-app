@@ -4,11 +4,14 @@ var REACTIONS = [
   { type: 'poop', icon: '💩' },
   { type: 'flag', icon: '🚩' }
 ];
+var CACHE = {};
+var timer = null;
 
-function renderReactions(el, data) {
+function paint(el) {
   var token = el.dataset.token;
-  var counts = (data && data.counts) || {};
-  var mine = (data && data.mine) || [];
+  var data = CACHE[token] || {};
+  var counts = data.counts || {};
+  var mine = data.mine || [];
   el.innerHTML = REACTIONS.map(function (x) {
     return '<button class="rx ' + (mine.indexOf(x.type) > -1 ? 'on' : '') +
       '" data-type="' + x.type + '">' + x.icon + ' <b>' + (counts[x.type] || 0) + '</b></button>';
@@ -16,30 +19,61 @@ function renderReactions(el, data) {
   el.querySelectorAll('.rx').forEach(function (b) {
     b.onclick = function (e) {
       e.stopPropagation();
+      e.preventDefault();
       fetch('/api/votes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: token, type: b.dataset.type })
-      }).then(function () { loadReactions(el); }).catch(function () {});
+      }).then(function () {
+        return fetch('/api/votes?token=' + encodeURIComponent(token));
+      }).then(function (r) { return r.json(); })
+        .then(function (d) { CACHE[token] = d; paintAll(token); })
+        .catch(function () {});
     };
   });
 }
 
-function loadReactions(el) {
-  if (!el.dataset.token) return;
-  renderReactions(el, null);
-  fetch('/api/votes?token=' + encodeURIComponent(el.dataset.token))
-    .then(function (x) { return x.json(); })
-    .then(function (r) { renderReactions(el, r); })
-    .catch(function () {});
-}
-
-function scanReactions() {
-  document.querySelectorAll('.rx-bar:not([data-ready])').forEach(function (el) {
-    el.dataset.ready = '1';
-    loadReactions(el);
+function paintAll(token) {
+  document.querySelectorAll('.rx-bar').forEach(function (el) {
+    if (el.dataset.token === token) paint(el);
   });
 }
 
-new MutationObserver(scanReactions).observe(document.documentElement, { childList: true, subtree: true });
-scanReactions();
+function scan() {
+  // add a bar to every table row that has none
+  document.querySelectorAll('tr[data-w]').forEach(function (tr) {
+    var td = tr.querySelector('td');
+    if (td && !td.querySelector('.rx-bar')) {
+      var d = document.createElement('div');
+      d.className = 'rx-bar';
+      d.dataset.token = tr.getAttribute('data-w');
+      td.appendChild(d);
+    }
+  });
+  // fill all new bars with one request
+  var fresh = [];
+  document.querySelectorAll('.rx-bar:not([data-ready])').forEach(function (el) {
+    el.dataset.ready = '1';
+    if (el.dataset.token) { paint(el); fresh.push(el.dataset.token); }
+  });
+  if (!fresh.length) return;
+  var uniq = fresh.filter(function (t, i) { return fresh.indexOf(t) === i; });
+  for (var i = 0; i < uniq.length; i += 50) {
+    (function (part) {
+      fetch('/api/votes?tokens=' + encodeURIComponent(part.join(',')))
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          part.forEach(function (t) { if (d[t]) { CACHE[t] = d[t]; paintAll(t); } });
+        })
+        .catch(function () {});
+    })(uniq.slice(i, i + 50));
+  }
+}
+
+function later() {
+  clearTimeout(timer);
+  timer = setTimeout(scan, 150);
+}
+
+new MutationObserver(later).observe(document.documentElement, { childList: true, subtree: true });
+scan();
