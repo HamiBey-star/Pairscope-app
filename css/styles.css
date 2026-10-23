@@ -376,3 +376,29 @@ tbody tr{transition:background-color .12s}
 #detail{overscroll-behavior:contain;transition:transform .22s cubic-bezier(.2,.8,.2,1),visibility 0s linear 0s}
 #detail:not(.open){visibility:hidden;transition:transform .22s cubic-bezier(.2,.8,.2,1),visibility 0s linear .22s}
 @media(max-width:700px){.wl{flex-wrap:wrap}.wl input{flex:1 1 100%}.wl button{flex:1}.live{min-width:0;text-align:left;margin-left:0}}
+
+/* round 2: token panel, mobile nav, Surges + Picks */
+#detail .hd{position:sticky;top:0;z-index:2;margin-top:-6px;padding:6px 0 10px;background:rgba(20,26,33,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#detail .x{width:40px;height:40px;border-radius:50%;line-height:1;transition:background-color .12s,color .12s}
+#detail .x:hover{background:rgba(255,255,255,.08);color:var(--text)}
+#detail .big{font-size:30px;letter-spacing:-.02em;margin:6px 0 2px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+#detail #lc{padding:2px 10px;border-radius:99px;font-weight:700;background:rgba(255,255,255,.06)}
+#detail #lc.up{background:rgba(46,204,113,.15)}#detail #lc.down{background:rgba(255,92,92,.15)}
+#detail #ch{border-radius:12px;background:rgba(255,255,255,.02)}
+#detail .grid{grid-template-columns:repeat(3,1fr)}
+#detail .st{border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:10px;padding:10px 12px}
+#detail .st span{display:block;font-size:11px;margin-bottom:3px}
+#detail .st b{font-size:16px}
+#detail .rbox{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
+#detail .rbox>div>a{display:inline-flex;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:8px;color:var(--text);text-decoration:none;font-size:12px;font-weight:600;transition:border-color .12s,color .12s}
+#detail .rbox>div>a:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:380px){#detail .grid{grid-template-columns:1fr 1fr}#detail .big{font-size:26px}}
+@media(max-width:700px){#psnav button{min-height:48px;transition:transform .08s,color .2s,background .2s}#psnav button:active{transform:scale(.94)}}
+.pulse{gap:8px}
+.pulse>span{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:99px;padding:4px 10px}
+.ptb{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel);overscroll-behavior-x:contain}
+.ptb table{min-width:600px}
+.ptb th,.ptb td{padding:11px 12px}
+.ptb tbody tr:hover td{background:#182029}
+.ptb td.up,.ptb td.down{font-weight:700}
+#body td[colspan]{padding:44px 16px!important;white-space:normal;text-align:center;font-size:13px}
