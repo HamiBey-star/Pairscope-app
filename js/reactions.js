@@ -47,7 +47,7 @@ function scan() {
     if (td && s && !td.querySelector('.rx-bar')) {
       var d = document.createElement('div');
       d.className = 'rx-bar';
-      d.dataset.token = s.getAttribute('data-w');
+      d.dataset.token = s.getAttribute('data-w').split('|').pop();
       td.appendChild(d);
     }
   });
