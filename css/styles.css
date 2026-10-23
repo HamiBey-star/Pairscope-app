@@ -351,3 +351,28 @@ th{font-size:12px}
 .rx.on{background:rgba(0,255,170,.18);box-shadow:0 0 0 1px #00ffaa inset}
 #pxm input[type=number]{width:100%;max-width:220px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg,transparent);color:inherit;font-size:16px}
 .pp-buy{display:block;margin-top:6px;font-size:12px;padding:4px 10px;color:var(--accent,#00e0b8);border-color:var(--accent,#00e0b8)}
+
+/* polish + stability layer (keep last) */
+html{-webkit-text-size-adjust:100%}
+body{overflow-x:clip;-webkit-tap-highlight-color:transparent;font-variant-numeric:tabular-nums}
+button,select{font:inherit}
+button,.tab,.chip,.tf,.star,tbody tr{touch-action:manipulation}
+h1{font-size:22px;letter-spacing:-.01em}
+.hero{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:16px}
+.hero>b{font-size:16px}
+.hero input{padding:12px 14px;font-size:15px}
+.hero .al button{padding:12px 22px;font-size:14px;border-radius:8px}
+.wl{display:flex;gap:8px;margin:10px 0 0}
+.wl input{padding:11px 14px;font-size:14px}
+.wl button{flex:none;padding:10px 16px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-weight:600;cursor:pointer;white-space:nowrap;transition:border-color .12s,color .12s}
+.wl button:hover{border-color:var(--accent);color:var(--accent)}
+#tabs{min-height:46px;scrollbar-width:thin}.chips{min-height:38px;scrollbar-width:thin}
+.tbl{min-height:360px;overscroll-behavior-x:contain;border-radius:12px}
+.live{min-width:190px;text-align:right}
+.tab,.chip,.tf{transition:background-color .12s,border-color .12s,color .12s,transform .08s}
+.tab:hover,.chip:hover{border-color:var(--accent)}
+.tab:active,.chip:active,.tf:active,.al button:active{transform:scale(.97)}
+tbody tr{transition:background-color .12s}
+#detail{overscroll-behavior:contain;transition:transform .22s cubic-bezier(.2,.8,.2,1),visibility 0s linear 0s}
+#detail:not(.open){visibility:hidden;transition:transform .22s cubic-bezier(.2,.8,.2,1),visibility 0s linear .22s}
+@media(max-width:700px){.wl{flex-wrap:wrap}.wl input{flex:1 1 100%}.wl button{flex:1}.live{min-width:0;text-align:left;margin-left:0}}

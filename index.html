@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cdn.dexscreener.com https://dd.dexscreener.com; connect-src 'self' https://cloudflareinsights.com https://pairscope-alerts.dr-hamzakhan0.workers.dev https://pairscope-featured.dr-hamzakhan0.workers.dev https://pairscope-indexer2.dr-hamzakhan0.workers.dev https://api.dexscreener.com https://api.geckoterminal.com https://api.gopluslabs.io https://api.paraswap.io https://lite-api.jup.ag; manifest-src 'self' blob: data:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script src="js/fetch-cache.js?v=20261022a"></script>
+<script src="js/fetch-cache.js?v=20261023e"></script>
 <title>PairScope</title>
 <link rel="canonical" href="https://pairscope.online/">
 <meta name="description" content="PairScope: live DEX pair scanner with Heat scores, a Risk Radar and a contract security checker for any token.">
@@ -21,41 +21,26 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:image" content="https://pairscope.online/og.jpg">
 <meta name="twitter:title" content="PairScope">
+<meta name="twitter:description" content="Live DEX pair scanner with Heat scores, a Risk Radar and a contract security checker for any token.">
+<link rel="preconnect" href="https://api.dexscreener.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.dexscreener.com">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" id="ati">
-<link rel="stylesheet" href="css/styles.css?v=20261022a"><link rel="manifest" id="mf">
+<link rel="stylesheet" href="css/styles.css?v=20261023e"><link rel="manifest" id="mf">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PairScope">
- <head>
-  <meta charset="UTF-8">
-  <title>Pairscope</title>
-
-  <!-- paste here -->
-  <meta property="og:image" content="https://pairscope.online/og.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Pairscope">
-  <meta name="twitter:description" content="Your short description">
-  <meta name="twitter:image" content="https://pairscope.online/og.jpg">
-
-  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
- <div style="max-width:520px;margin:16px auto;display:flex;gap:8px;padding:0 12px">
-  <input id="wsearch" type="text" placeholder="Paste a Solana wallet address"
-    style="flex:1;min-width:0;padding:12px;border:1px solid #888;border-radius:8px;font-size:16px">
-  <button type="button" id="wgo"
-    style="padding:12px 18px;border:0;border-radius:8px;font-size:16px;cursor:pointer">Look up</button>
-</div>
-<script src="/wallet-search.js"></script>
-<noscript><p style="padding:16px">PairScope needs JavaScript to load live DEX data.</p></noscript>
+ <noscript><p style="padding:16px">PairScope needs JavaScript to load live DEX data.</p></noscript>
 <a class="sr skip" href="#body">Skip to results</a>
 <div class="wrap">
   <h1><img id="logo" alt="PairScope logo" width="36" height="36"> PairScope</h1>
   <div class="rbox hero" id="hero" role="search" aria-label="Token contract checker"><b>🛡️ Is this token safe? Paste any contract address</b>
     <div class="al" style="flex-wrap:wrap"><input id="hca" aria-label="Token contract address" placeholder="Paste token contract (EVM or Solana)…" autocomplete="off" spellcheck="false"><button id="hgo" type="button">Scan free</button></div>
     <small>Market Risk Radar plus a GoPlus contract scan in seconds. Not financial advice.</small></div>
+  <div class="wl" role="search" aria-label="Solana wallet lookup"><input id="wsearch" aria-label="Solana wallet address" placeholder="Or look up a Solana wallet address…" autocomplete="off" spellcheck="false"><button type="button" id="wgo">Look up wallet</button></div>
   <div class="rbox psp" id="psp" aria-label="PSP token">
     <div class="ph"><b><img class="pl" src="assets/psp-logo.png" alt="PSP logo" width="32" height="32"> $PSP, the PairScope coin</b><span class="pt" id="psptag">COMING SOON</span></div>
     <p>$PSP is the community coin of PairScope.online. Hold it, share it and help us keep the scanner free and growing.</p>
@@ -129,14 +114,14 @@
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="detail" role="dialog" aria-modal="true" aria-label="Token details"></div>
-<script src="js/icons.js?v=20261022a"></script>
-<script src="js/core.js?v=20261022a"></script>
-<script src="js/trade.js?v=20261022a"></script>
-<script src="js/ux-mobile.js?v=20261022a"></script>
-<script src="js/ux-gestures.js?v=20261022a"></script>
-<script src="js/tools.js?v=20261023b"></script>
-<script src="js/token-media.js?v=20261022a"></script>
-<script src="js/featured.js?v=20261022a"></script>
+<script src="js/icons.js?v=20261023e"></script>
+<script src="js/core.js?v=20261023e"></script>
+<script src="js/trade.js?v=20261023e"></script>
+<script src="js/ux-mobile.js?v=20261023e"></script>
+<script src="js/ux-gestures.js?v=20261023e"></script>
+<script src="js/tools.js?v=20261023e"></script>
+<script src="js/token-media.js?v=20261023e"></script>
+<script src="js/featured.js?v=20261023e"></script>
 <div id="tmview"><div class="tmw"><button type="button" id="tmclose">← Back to PairScope</button>
 <h1>Terms &amp; Disclaimer</h1>
 <div class="muted">Last updated: October 20, 2026</div>
@@ -211,15 +196,16 @@
 
 <p class="muted" style="margin-top:30px">This page is a general notice and not legal advice.</p>
 </div></div>
-<script src="js/terms.js?v=20261022a"></script>
-<script src="js/hot-cards.js?v=20261022a"></script>
-<script src="js/checker-seo.js?v=20261022a"></script>
-<script src="js/row-sparks.js?v=20261022a"></script>
-<script src="js/card-extras.js?v=20261023a"></script>
- <script src="js/pump-live.js?v=20261023d"></script>
-<script src="js/psp.js?v=20261022a"></script>
-<script src="js/deployer.js?v=20261022a"></script>
+<script src="js/terms.js?v=20261023e"></script>
+<script src="js/hot-cards.js?v=20261023e"></script>
+<script src="js/checker-seo.js?v=20261023e"></script>
+<script src="js/row-sparks.js?v=20261023e"></script>
+<script src="js/card-extras.js?v=20261023e"></script>
+ <script src="js/pump-live.js?v=20261023e"></script>
+<script src="js/psp.js?v=20261023e"></script>
+<script src="js/deployer.js?v=20261023e"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "941b5966f6194fd1b04a161bb81adb5d"}'></script><!-- End Cloudflare Web Analytics -->
-<script src="js/reactions.js?v=8"></script>
+<script src="js/reactions.js?v=20261023e"></script>
+<script src="wallet-search.js"></script>
 </body>
 </html>
