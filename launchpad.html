@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PairScope Launchpad</title>
+<style>
+  :root { --bg:#0b0e11; --card:#151a20; --line:#262d36; --text:#e8ecf1; --mute:#8a94a3; --accent:#f0b90b; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui,sans-serif; padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+  .wrap { max-width:520px; margin:0 auto; padding:20px 16px 40px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  p.sub { color:var(--mute); margin:0 0 18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  label { display:block; font-size:13px; color:var(--mute); margin:12px 0 4px; }
+  input, textarea { width:100%; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:10px; font:inherit; }
+  textarea { min-height:70px; resize:vertical; }
+  button { width:100%; margin-top:16px; padding:12px; border:0; border-radius:8px; background:var(--accent); color:#111; font-weight:600; font-size:15px; cursor:pointer; }
+  button.ghost { background:transparent; color:var(--text); border:1px solid var(--line); margin-top:0; margin-bottom:8px; }
+  button:disabled { opacity:.5; }
+  #status { margin-top:14px; font-size:14px; word-break:break-word; }
+  #status a { color:var(--accent); }
+  .note { color:var(--mute); font-size:12px; margin-top:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🚀 PairScope Launchpad</h1>
+  <p class="sub">Launch on pump.fun with a custom <b>…psps</b> address.</p>
+  <div class="card">
+    <button class="ghost" id="connect" type="button">Connect Phantom</button>
+    <form id="form">
+      <label>Name</label><input name="name" maxlength="32" required>
+      <label>Symbol</label><input name="symbol" maxlength="10" required>
+      <label>Description</label><textarea name="description" maxlength="500"></textarea>
+      <label>Image</label><input name="image" type="file" accept="image/*" required>
+      <label>Twitter / X (optional)</label><input name="twitter" placeholder="https://x.com/...">
+      <label>Telegram (optional)</label><input name="telegram" placeholder="https://t.me/...">
+      <label>Website (optional)</label><input name="website" placeholder="https://...">
+      <label>Dev buy in SOL (optional)</label><input name="devBuy" type="number" step="0.01" min="0" max="10" value="0">
+      <button id="go" type="submit">Launch token</button>
+    </form>
+    <div id="status"></div>
+    <div class="note">You sign and pay in your own wallet. PairScope never holds your funds. Launching tokens is risky and not financial advice.</div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
+<script>
+  // Leave empty when served by the same server. On pairscope.online set to your public backend URL.
+  const API = window.LAUNCHPAD_API || '';
+  const $ = id => document.getElementById(id);
+  const say = html => { $('status').innerHTML = html; };
+  let pk = null;
+
+  $('connect').onclick = async () => {
+    const p = window.phantom && window.phantom.solana;
+    if (!p || !p.isPhantom) return say('Phantom not found. Install it first.');
+    try {
+      const r = await p.connect();
+      pk = r.publicKey.toString();
+      $('connect').textContent = '✅ ' + pk.slice(0, 4) + '…' + pk.slice(-4);
+    } catch (e) { say('Connect cancelled.'); }
+  };
+
+  $('form').onsubmit = async e => {
+    e.preventDefault();
+    if (!pk) return say('Connect Phantom first.');
+    $('go').disabled = true;
+    try {
+      const fd = new FormData(e.target);
+      fd.append('publicKey', pk);
+      say('Preparing launch…');
+      const r = await fetch(API + '/api/prepare', { method: 'POST', body: fd });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || 'Failed');
+      const tx = solanaWeb3.VersionedTransaction.deserialize(Uint8Array.from(atob(j.tx), c => c.charCodeAt(0)));
+      say('Approve the transaction in Phantom…');
+      const { signature } = await window.phantom.solana.signAndSendTransaction(tx);
+      say('Sent. Waiting for confirmation…<br>Mint: ' + j.mint);
+      for (let i = 0; i < 12; i++) {
+        await new Promise(r => setTimeout(r, 4000));
+        const c = await (await fetch(API + '/api/confirm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mint: j.mint }) })).json();
+        if (c.confirmed) {
+          return say('🎉 Launched!<br><a target="_blank" href="https://pump.fun/coin/' + j.mint + '">View on pump.fun</a><br>Mint: ' + j.mint);
+        }
+      }
+      say('Sent but not confirmed yet. Check <a target="_blank" href="https://solscan.io/tx/' + signature + '">Solscan</a>.');
+    } catch (err) {
+      say('Error: ' + (err.message || err));
+    }
+    $('go').disabled = false;
+  };
+</script>
+</body>
+</html>
