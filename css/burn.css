@@ -1,0 +1,9 @@
+.row{margin:12px 0}
+label{display:block;margin-bottom:4px;color:var(--muted);font-size:.9rem}
+input,select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit}
+button{margin-top:6px;padding:10px 16px;border:0;border-radius:8px;background:linear-gradient(135deg,#00e0b8,#4da3ff);color:#04101f;font:inherit;font-weight:600;cursor:pointer}
+button:disabled{opacity:.55;cursor:default}
+.msg{min-height:1.4em;margin:10px 0}
+.msg.ok{color:#2ecc71}
+.msg.err{color:var(--bad)}
+code{word-break:break-all}
