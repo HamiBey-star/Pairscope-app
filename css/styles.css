@@ -176,6 +176,7 @@ td.fu{animation:fu .9s ease-out}td.fd{animation:fd .9s ease-out}
  #psnav{display:flex;position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:30;justify-content:space-around;padding:6px;border-radius:22px;background:rgba(14,19,25,.82);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 30px rgba(0,0,0,.55)}
  #psnav button{flex:1;min-width:0;background:none;border:0;color:var(--muted);font-size:10px;padding:6px 0;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}#psnav button i{font-style:normal;font-size:20px}
  #psnav button.on{color:var(--text);background:rgba(77,163,255,.18)}
+ #psnav button{color:#4da3ff;background:rgba(77,163,255,.18)}
  .note{margin-bottom:110px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
