@@ -311,7 +311,7 @@ function getFeatured(){
 function getFeatured2(){
   var by={};FEATURED.forEach(function(f){(by[f.c]=by[f.c]||[]).push(f.a)});
   var cs=Object.keys(by);if(!cs.length)return Promise.resolve([]);
-  return Promise.all(cs.map(function(c){return fetch(B+"/tokens/v1/"+encodeURIComponent(c)+"/"+by[c].slice(0,30).map(encodeURIComponent).join(",")).then(function(r){return r.json()}).catch(function(){return[]})})).then(function(arrs){var rows=dedupe([].concat.apply([],arrs).map(map));rows.forEach(function(r){r.sp=true;FEATURED.forEach(function(f){if(f.c===r.c&&String(f.a).toLowerCase()===String(r.addr).toLowerCase())r.fp=f.p})});
+  return Promise.all(cs.map(function(c){return fetch(B+"/tokens/v1/"+encodeURIComponent(c)+"/"+by[c].slice(0,30).map(encodeURIComponent).join(",")).then(function(r){return r.json()}).catch(function(){return[]})})).then(function(arrs){var rows=dedupe([].concat.apply([],arrs).map(map));rows.forEach(function(r){r.sp=true;FEATURED.forEach(function(f){if(f.c===r.c&&String(f.a).toLowerCase()===String(r.addr).toLowerCase())r.fp=f.p})});return rows});
 }
 $("feat").onclick=function(e){var t=e.target;
   if(t.id==="lst"){var b=$("lstbox");b.style.display=b.style.display==="none"?"block":"none";return}
