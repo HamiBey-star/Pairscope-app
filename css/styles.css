@@ -275,7 +275,7 @@ th{font-size:12px}
   .hv-strip .hv{width:44px;height:44px;margin:2px auto 6px}
   .hv-strip .hv-sp{display:none}
   .hv-hd{margin:10px 2px 6px}
-  .psp p{display:none}
+ .psp p{font-size:13px}
 }
 
 /* ===== final pass ===== */
