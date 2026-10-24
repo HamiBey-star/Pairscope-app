@@ -19,3 +19,21 @@
   window.addEventListener("offline", update);
   update();
 })();
+(function () {
+  var ev = null;
+  var b = document.createElement("button");
+  b.textContent = "Install app";
+  b.style.cssText = "position:fixed;left:14px;bottom:90px;z-index:50;padding:10px 14px;border-radius:20px;border:0;background:#22d3ee;color:#0d192f;font-size:13px;display:none";
+  document.body.appendChild(b);
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    ev = e;
+    b.style.display = "block";
+  });
+  b.onclick = function () {
+    if (!ev) return;
+    ev.prompt();
+    ev.userChoice.finally(function () { ev = null; b.style.display = "none"; });
+  };
+  window.addEventListener("appinstalled", function () { b.style.display = "none"; });
+})();
