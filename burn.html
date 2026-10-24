@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://pairscope-featured.dr-hamzakhan0.workers.dev; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Get featured by burning $PSP | PairScope</title>
+<meta name="description" content="Burn 5,000,000 $PSP to get a token featured on PairScope for free. The same safety checks as paid listings apply.">
+<link rel="canonical" href="https://pairscope.online/burn">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="css/methodology.css">
+<link rel="stylesheet" href="css/burn.css">
+</head>
+<body>
+<main class="wrap">
+<p><a href="/">← Back to PairScope</a></p>
+<h1>Get featured by burning $PSP</h1>
+<p class="muted">Burn <b id="amt">5,000,000</b> $PSP and the token you choose is featured on PairScope for <b id="days">7</b> days, without paying in SOL.</p>
+
+<div class="box"><b>Read this first.</b> A burn is permanent and cannot be undone. Your token must pass the same checks as paid listings (a trading pair, minimum liquidity and the contract scan). If it fails, the listing is declined and burned tokens are not returned. A featured listing is paid placement, not an endorsement or financial advice. See the <a href="/#terms">Terms</a>.</div>
+
+<h2>Step 1. Tell us what to feature</h2>
+<div class="row"><label for="chain">Network of the token</label><select id="chain"></select></div>
+<div class="row"><label for="addr">Token contract address to feature</label><input id="addr" autocomplete="off" spellcheck="false" placeholder="Token contract address"></div>
+<div class="row"><label for="wallet">Your Solana wallet that will burn the $PSP</label><input id="wallet" autocomplete="off" spellcheck="false" placeholder="Wallet address"></div>
+<button type="button" id="reg">Check token and save request</button>
+<p id="msg1" class="msg" role="status"></p>
+
+<div id="step2" hidden>
+<h2>Step 2. Burn the $PSP</h2>
+<p>Within 30 minutes, burn at least <b class="amt2">5,000,000</b> $PSP in <b>one transaction</b>, from the wallet you entered above. $PSP token address:</p>
+<p><code id="mint"></code></p>
+<p class="muted">Use your wallet's real <b>Burn</b> option (in Phantom, open the token, tap the three dots and choose Burn). Sending tokens to a "dead" address is a transfer, not a burn, and will not be accepted.</p>
+
+<h2>Step 3. Paste the burn transaction signature</h2>
+<div class="row"><label for="sig">Transaction signature</label><input id="sig" autocomplete="off" spellcheck="false" placeholder="Transaction signature"></div>
+<button type="button" id="go">Verify burn and feature my token</button>
+<p id="msg2" class="msg" role="status"></p>
+</div>
+
+<h2>Problems?</h2>
+<p>Email <a href="mailto:pairscope@gmail.com">pairscope@gmail.com</a> with your burn transaction signature and token address.</p>
+</main>
+<script src="js/burn.js?v=1"></script>
+</body>
+</html>
