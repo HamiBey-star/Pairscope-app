@@ -1,0 +1,15 @@
+{
+  "name": "PairScope",
+  "short_name": "PairScope",
+  "description": "Live DEX pair scanner with Heat scores, Risk Radar and a contract checker.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d192f",
+  "theme_color": "#0d192f",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
