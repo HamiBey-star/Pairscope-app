@@ -9,3 +9,13 @@
     b.style.display = window.scrollY > 600 ? "block" : "none";
   });
 })();
+(function () {
+  var bar = document.createElement("div");
+  bar.textContent = "You're offline. Prices may be out of date.";
+  bar.style.cssText = "position:fixed;left:0;right:0;top:0;z-index:100;padding:8px 12px;text-align:center;font-size:13px;background:#f5c542;color:#0d192f;display:none";
+  document.body.appendChild(bar);
+  function update() { bar.style.display = navigator.onLine ? "none" : "block"; }
+  window.addEventListener("online", update);
+  window.addEventListener("offline", update);
+  update();
+})();
