@@ -42,7 +42,7 @@ function pay(){
     if(!r.ok)throw new Error(r.error);
     msg("Found "+r.token.symbol+". Connecting wallet…");
     return ph.connect()
-  }).then(function(x){acct=x.publicKey.toString();return fetch(API+"/blockhash").then(function(r){return r.json()})})
+  }).then(function(x){acct=x.publicKey.toString();}).then(function(x){acct=x.publicKey.toString();return post("/intent",{chain:chain,address:address,plan:pid,payer:acct}).catch(function(){}).then(function(){return fetch(API+"/blockhash").then(function(r){return r.json()})})})
   .then(function(b){
     msg("Confirm the payment in Phantom…");
     var tx=transferTx(acct,SOLWALLET,Math.round(p.sol*1e9),b.blockhash);
