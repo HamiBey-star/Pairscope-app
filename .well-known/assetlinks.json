@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "online.pairscope.twa",
+        "sha256_cert_fingerprints": ["D6:64:32:15:8D:DC:71:FA:03:EF:12:DC:77:26:01:CD:25:81:75:AE:70:90:39:B1:65:46:0B:29:55:E7:9A:AD"]
+      }
+    }]
