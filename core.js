@@ -15,7 +15,7 @@ function pc(v){v=+v||0;return'<td class="'+(v>=0?"up":"down")+'">'+(v>=0?"+":"")
 function map(x){var pcg=x.priceChange||{},tx=(x.txns&&x.txns.h24)||{};
   var o={s:x.baseToken.symbol,q:x.quoteToken.symbol,c:x.chainId,dex:x.dexId,p:+x.priceUsd||0,m5:pcg.m5||0,h1:pcg.h1||0,h6:pcg.h6||0,h24:pcg.h24||0,
   v:(x.volume&&x.volume.h24)||0,l:(x.liquidity&&x.liquidity.usd)||0,f:x.fdv||0,t:x.pairCreatedAt||0,age:x.pairCreatedAt?Date.now()-x.pairCreatedAt:1e15,
-  tx:(tx.buys||0)+(tx.sells||0),b:tx.buys||0,sl:tx.sells||0,v5:(x.volume&&x.volume.m5)||0,v6:(x.volume&&x.volume.h6)||0,b5:(x.txns&&x.txns.m5&&x.txns.m5.buys)||0,s5:(x.txns&&x.txns.m5&&x.txns.m5.sells)||0,b6:(x.txns&&x.txns.h6&&x.txns.h6.buys)||0,s6:(x.txns&&x.txns.h6&&x.txns.h6.sells)||0,v1:(x.volume&&x.volume.h1)||0,b1:(x.txns&&x.txns.h1&&x.txns.h1.buys)||0,s1:(x.txns&&x.txns.h1&&x.txns.h1.sells)||0,url:safeUrl(x.url,x.chainId,x.pairAddress),addr:x.baseToken.address,pair:x.pairAddress,img:(x.info&&x.info.imageUrl)||""};o.rs=riskCalc(o).s;heatCalc(o);return o}
+  tx:(tx.buys||0)+(tx.sells||0),b:tx.buys||0,sl:tx.sells||0,v5:(x.volume&&x.volume.m5)||0,v6:(x.volume&&x.volume.h6)||0,b5:(x.txns&&x.txns.m5&&x.txns.m5.buys)||0,s5:(x.txns&&x.txns.m5&&x.txns.m5.sells)||0,b6:(x.txns&&x.txns.h6&&x.txns.h6.buys)||0,s6:(x.txns&&x.txns.h6&&x.txns.h6.sells)||0,v1:(x.volume&&x.volume.h1)||0,b1:(x.txns&&x.txns.h1&&x.txns.h1.buys)||0,s1:(x.txns&&x.txns.h1&&x.txns.h1.sells)||0,url:safeUrl(x.url,x.chainId,x.pairAddress,x.baseToken.address),addr:x.baseToken.address,pair:x.pairAddress,img:(x.info&&x.info.imageUrl)||""};o.rs=riskCalc(o).s;heatCalc(o);return o}
 function hc(s){return s>=60?"rk-h":s>=30?"rk-y":"rk-m"}
 function heatCalc(o){
   var hrs=o.t?Math.min(24,Math.max(1,(Date.now()-o.t)/36e5)):24,avg=o.v/hrs;
