@@ -14,7 +14,7 @@ var fails=0,visible=function(){return typeof mode!=="undefined"&&mode==="new"};
 function ago(t){var s=Math.max(0,Math.round((Date.now()-t)/1000));return s<60?s+"s ago":Math.round(s/60)+"m ago"}
 function draw(fresh){
   list.innerHTML=items.map(function(x,i){
-    return'<a class="'+(fresh&&i===0?"fresh":"")+'" target="_blank" rel="noopener" href="https://dexscreener.com/solana/'+x.m+'"><div><span class="pn">'+E(x.n)+'</span> <span class="pq">'+E(x.s)+'</span></div><div class="pr">MC '+x.mc+' SOL<span>'+(x.b>0?"Dev bought "+x.b+" SOL \u00b7 ":"")+ago(x.t)+'</span></div></a>'}).join("")||'<div class="pq" style="padding-top:8px">Waiting for the next launch\u2026</div>'}
+    return'<a class="'+(fresh&&i===0?"fresh":"")+'" target="_blank" rel="noopener" href="https://pump.fun/coin/'+x.m+'"><div><span class="pn">'+E(x.n)+'</span> <span class="pq">'+E(x.s)+'</span></div><div class="pr">MC '+x.mc+' SOL<span>'+(x.b>0?"Dev bought "+x.b+" SOL \u00b7 ":"")+ago(x.t)+'</span></div></a>'}).join("")||'<div class="pq" style="padding-top:8px">Waiting for the next launch\u2026</div>'}
 function connect(){
   if(ws&&ws.readyState<=1)return;stat.textContent="connecting\u2026";
   var w;try{w=ws=new WebSocket((location.protocol==="https:"?"wss://":"ws://")+location.host+"/api/pump-live")}catch(e){stat.textContent="blocked: "+(e&&e.name||"error");return}
