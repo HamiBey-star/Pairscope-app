@@ -37,12 +37,18 @@ function savePA(){LS.s("ps_pa",PA)}
 if(!PA||!PA.pos){PA={cash:PSTART,pos:[],hist:[]};PT.forEach(function(p){var u=+p.u||0;if(u>0&&p.e>0){PA.pos.push({k:p.k,s:p.s,c:p.c,a:p.a,e:p.e,q:u/p.e,u:u,t:p.t,last:p.e});PA.cash-=u}});PA.cash=Math.max(PA.cash,0);savePA();try{localStorage.removeItem("ps_pt")}catch(e){}}
 var money=function(n){return(n>=0?"+":"-")+"$"+Math.abs(n).toFixed(2)},fq=function(n){return n>=1e3?Math.round(n).toLocaleString():n>=1?n.toFixed(2):n.toPrecision(3)},PX={},PXT=0,LASTH="";
 function prices(list){var by={};list.forEach(function(p){if(p.a)(by[p.c]=by[p.c]||[]).push(p.a)});return Promise.all(Object.keys(by).map(function(c){return fetch(B+"/tokens/v1/"+c+"/"+by[c].slice(0,30).join(",")).then(function(r){return r.json()}).then(function(j){return Array.isArray(j)?j:[]}).catch(function(){return[]})})).then(function(a){var m={};dedupe([].concat.apply([],a).map(function(x){try{return map(x)}catch(e){return{p:0}}})).forEach(function(r){m[key(r)]=r});return m})}
+/* coin pictures for the paper panel: saved pic, then DexScreener pic, then a letter */
+function plogo(w,o){var u=[],i=0;if(/^https:\/\//.test(o.im||""))u.push(o.im);if(o.c&&o.a)u.push("https://dd.dexscreener.com/ds-data/tokens/"+encodeURIComponent(o.c)+"/"+encodeURIComponent(o.a)+".png");
+  function av(){var h=0,t=String(o.s||"?"),b=document.createElement("b");for(var j=0;j<t.length;j++)h=(h*31+t.charCodeAt(j))%360;w.textContent="";b.textContent=t.replace(/^[^A-Za-z0-9]+/,"").charAt(0).toUpperCase()||"?";b.style.background="hsl("+h+",45%,38%)";w.appendChild(b)}
+  function next(){if(i>=u.length)return av();var m=new Image();m.alt="";m.width=m.height=26;m.referrerPolicy="no-referrer";m.onerror=next;m.src=u[i++];w.textContent="";w.appendChild(m)}
+  next()}
+function paperLogos(){[].forEach.call(document.querySelectorAll("#pxm .tk[data-pi],#pxm .tk[data-pb]"),function(w){var pi=w.getAttribute("data-pi"),o=pi!==null?PA.pos[+pi]:(PB&&{im:PB.img,c:PB.c,a:PB.addr,s:PB.s});if(o)plogo(w,o)})}
 function paperAdd(r){if(!r||!(r.p>0)){toast("Price not available yet");return}PB=r;
-  modal('<h3>💼 Paper buy '+X(r.s)+'</h3><p class="q">Price '+fprice(r.p)+' · Cash $'+PA.cash.toFixed(2)+'</p><p><input id="pxa" type="number" inputmode="decimal" min="1" step="any" value="'+Math.min(100,Math.floor(PA.cash))+'" aria-label="Amount in USD"></p><p><button class="chip" data-x="pq" data-v="25">25%</button> <button class="chip" data-x="pq" data-v="50">50%</button> <button class="chip" data-x="pq" data-v="100">Max</button> <button class="chip" data-x="pconf">✓ Buy</button></p><p class="q">Simulated only. No wallet or real funds.</p>');
-  setTimeout(function(){var i=$("pxa");if(i)i.focus()},50)}
+  modal('<h3>💼 Paper buy <span class="tk" data-pb="1"></span>'+X(r.s)+'</h3><p class="q">Price '+fprice(r.p)+' · Cash $'+PA.cash.toFixed(2)+'</p><p><input id="pxa" type="number" inputmode="decimal" min="1" step="any" value="'+Math.min(100,Math.floor(PA.cash))+'" aria-label="Amount in USD"></p><p><button class="chip" data-x="pq" data-v="25">25%</button> <button class="chip" data-x="pq" data-v="50">50%</button> <button class="chip" data-x="pq" data-v="100">Max</button> <button class="chip" data-x="pconf">✓ Buy</button></p><p class="q">Simulated only. No wallet or real funds.</p>');
+  paperLogos();setTimeout(function(){var i=$("pxa");if(i)i.focus()},50)}
 function paperConfirm(){var r=PB,a=parseFloat($("pxa")&&$("pxa").value);if(!r||!(r.p>0))return toast("Price not available yet");if(!(a>0))return toast("Enter an amount above 0");if(a>PA.cash+1e-9)return toast("Not enough paper cash");
   var k=key(r),q=a/r.p,x=PA.pos.filter(function(p){return p.k===k})[0];PA.cash-=a;
-  if(x){x.q+=q;x.u+=a;x.e=x.u/x.q;x.last=r.p}else PA.pos.push({k:k,s:r.s,c:r.c,a:r.addr,e:r.p,q:q,u:a,t:Date.now(),last:r.p});
+  if(x){x.q+=q;x.u+=a;x.e=x.u/x.q;x.last=r.p}else PA.pos.push({k:k,s:r.s,c:r.c,a:r.addr,e:r.p,q:q,u:a,t:Date.now(),last:r.p,im:r.img||""});
   savePA();PB=null;toast("💼 Bought $"+a.toFixed(2)+" of "+r.s);paperShow()}
 function paperSell(i,f){var p=PA.pos[i];if(!p)return;var n=p.last||p.e,q=p.q*f,cost=p.u*f,out=q*n;PA.cash+=out;PA.hist.push({s:p.s,pl:out-cost,t:Date.now()});if(PA.hist.length>200)PA.hist.shift();
   if(f>=0.999)PA.pos.splice(i,1);else{p.q-=q;p.u-=cost}savePA();toast("Sold "+Math.round(f*100)+"% of "+p.s+" ("+money(out-cost)+")");paperShow()}
@@ -52,15 +58,15 @@ function paperShow(){
   if(PA.pos.length)prices(PA.pos).then(function(m){PX=m;PXT=Date.now();if(PV&&$("pxm").classList.contains("on"))paperRender(Object.assign({},PX,liveMap()))}).catch(function(){})}
 function liveMap(){var m={};try{D.forEach(function(r){m[key(r)]=r})}catch(e){}return m}
 function paperRender(m){var val=0,unr=0,h="";
-  PA.pos.forEach(function(p,i){var r=m[p.k];if(r&&r.p>0)p.last=r.p;var n=p.last||p.e,v=p.q*n,d=v-p.u,pl=(n/p.e-1)*100;val+=v;unr+=d;
-    h+='<tr><td>'+X(p.s)+'</td><td>'+fq(p.q)+'</td><td>$'+p.u.toFixed(2)+'</td><td>'+fprice(p.e)+'</td><td>'+fprice(n)+(r?'':' <span class="q" title="Live price unavailable, showing last known">•</span>')+'</td><td>$'+v.toFixed(2)+'</td><td class="'+cl(pl)+'">'+sg(pl)+'</td><td class="'+cl(d)+'">'+money(d)+'</td><td style="white-space:nowrap"><button class="chip" data-x="psell" data-i="'+i+'" data-f="0.5">½</button> <button class="chip" data-x="psell" data-i="'+i+'" data-f="1">Sell</button></td></tr>'});
+  PA.pos.forEach(function(p,i){var r=m[p.k];if(r&&r.p>0)p.last=r.p;if(r&&r.img&&!p.im)p.im=r.img;var n=p.last||p.e,v=p.q*n,d=v-p.u,pl=(n/p.e-1)*100;val+=v;unr+=d;
+    h+='<tr><td style="white-space:nowrap"><span class="tk" data-pi="'+i+'"></span>'+X(p.s)+'</td><td>'+fq(p.q)+'</td><td>$'+p.u.toFixed(2)+'</td><td>'+fprice(p.e)+'</td><td>'+fprice(n)+(r?'':' <span class="q" title="Live price unavailable, showing last known">•</span>')+'</td><td>$'+v.toFixed(2)+'</td><td class="'+cl(pl)+'">'+sg(pl)+'</td><td class="'+cl(d)+'">'+money(d)+'</td><td style="white-space:nowrap"><button class="chip" data-x="psell" data-i="'+i+'" data-f="0.5">½</button> <button class="chip" data-x="psell" data-i="'+i+'" data-f="1">Sell</button></td></tr>'});
   savePA();
   var real=PA.hist.reduce(function(a,t){return a+t.pl},0),w=PA.hist.filter(function(t){return t.pl>0}).length,eq=PA.cash+val,tot=eq-PSTART;
   var html=('<h3>💼 Paper trades</h3><p>Equity <b>$'+eq.toFixed(2)+'</b> · Cash $'+PA.cash.toFixed(2)+' · Total <b class="'+cl(tot)+'">'+money(tot)+'</b></p>'+
     (PA.pos.length?'<div style="overflow-x:auto"><table><thead><tr><th>Token</th><th>Amount</th><th>Cost</th><th>Entry</th><th>Now</th><th>Value</th><th>P/L</th><th>P/L $</th><th></th></tr></thead><tbody>'+h+'</tbody></table></div>':'<p class="q">No open positions. Tap “Paper buy” under any pair.</p>')+
     '<p class="q">Open <span class="'+cl(unr)+'">'+money(unr)+'</span> · Realized <span class="'+cl(real)+'">'+money(real)+'</span>'+(PA.hist.length?' · Win rate '+Math.round(w/PA.hist.length*100)+'% ('+PA.hist.length+' closed)':'')+'</p>'+
     '<p><button class="chip" data-x="prst">Reset $'+PSTART.toLocaleString()+'</button></p><p class="q">Simulated only. Ignores fees, slippage and liquidity. Not financial advice.</p>');
-  if(PV&&html===LASTH&&$("pxm").classList.contains("on"))return;LASTH=html;modal(html);PV=true}
+  if(PV&&html===LASTH&&$("pxm").classList.contains("on"))return;LASTH=html;modal(html);PV=true;paperLogos()}
 /* Paper buy button on every table row (click does not open the detail view) */
 function rowBtns(){bd.querySelectorAll("tr[data-i]").forEach(function(tr){var td=tr.querySelector("td");if(td&&!td.querySelector(".pp-buy")){var b=document.createElement("button");b.className="chip pp-buy";b.type="button";b.textContent="💼 Paper buy";td.appendChild(b)}})}
 try{new MutationObserver(rowBtns).observe(bd,{childList:true})}catch(e){}rowBtns();
