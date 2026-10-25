@@ -403,3 +403,4 @@ tbody tr{transition:background-color .12s}
 .ptb tbody tr:hover td{background:#182029}
 .ptb td.up,.ptb td.down{font-weight:700}
 #body td[colspan]{padding:44px 16px!important;white-space:normal;text-align:center;font-size:13px}
+.psp .pb a,.psp .pb button{display:inline-block!important}
