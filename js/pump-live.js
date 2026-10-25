@@ -19,7 +19,7 @@ function connect(){
   if(ws&&ws.readyState<=1)return;stat.textContent="connecting\u2026";
   var w;try{w=ws=new WebSocket("wss://pumpportal.fun/api/data")}catch(e){stat.textContent="blocked: "+(e&&e.name||"error");return}
   var to=setTimeout(function(){if(w.readyState===0){stat.textContent="no response (8s)";try{w.close()}catch(x){}}},8000);
-  ws.onopen=function(){clearTimeout(to);retry=1000;fails=0;box.classList.add("on");stat.textContent="live"};
+  ws.onopen=function(){clearTimeout(to);try{ws.send(JSON.stringify({method:"subscribeNewToken"}))}catch(e){}retry=1000;fails=0;box.classList.add("on");stat.textContent="live"};
   ws.onmessage=function(ev){
     var d;try{d=JSON.parse(ev.data)}catch(e){return}
     if(!d||d.txType!=="create"||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(d.mint||""))return;
