@@ -7,7 +7,7 @@ function saveA(){try{localStorage.setItem("ps_alerts",JSON.stringify(A))}catch(e
 var onlyRk=false,D=[],mode="trending",term="",chain="all",minLiq=false,sortK="v",dir=-1,timer,loading=false,reqId=0;
 var $=function(i){return document.getElementById(i)};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-function safeUrl(u,c,p){return/^https:\/\/dexscreener\.com\//.test(u||"")?u:"https://dexscreener.com/"+encodeURIComponent(c||"")+"/"+encodeURIComponent(p||"")}
+function safeUrl(u,c,p,a){if(c==="solana"&&/pump$/.test(a||""))return"https://pump.fun/coin/"+a;return/^https:\/\/dexscreener\.com\//.test(u||"")?u:"https://dexscreener.com/"+encodeURIComponent(c||"")+"/"+encodeURIComponent(p||"")}
 function fm(n){n=+n||0;if(n>=1e9)return"$"+(n/1e9).toFixed(2)+"B";if(n>=1e6)return"$"+(n/1e6).toFixed(2)+"M";if(n>=1e3)return"$"+(n/1e3).toFixed(1)+"K";return"$"+Math.round(n)}
 function fprice(n){if(n>=1)return"$"+n.toFixed(n>=100?1:2);if(n>=0.01)return"$"+n.toFixed(4);return"$"+n.toPrecision(3)}
 function fage(t){if(!t)return"-";var m=(Date.now()-t)/6e4;if(m<60)return Math.max(1,Math.round(m))+"m";if(m<1440)return Math.round(m/60)+"h";if(m<43200)return Math.round(m/1440)+"d";return Math.round(m/43200)+"mo"}
