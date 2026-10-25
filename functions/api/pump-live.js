@@ -5,7 +5,7 @@ export async function onRequestGet({ request }) {
   const client = pair[0], server = pair[1];
   server.accept();
   try {
-    const up = await fetch("https://pumpportal.fun/api/data", { headers: { Upgrade: "websocket" } });
+   const up = await fetch("wss://pumpportal.fun/api/data", { headers: { Upgrade: "websocket" } });
     const u = up.webSocket;
     if (!u) { server.close(1011, "upstream unavailable"); return new Response(null, { status: 101, webSocket: client }); }
     u.accept();
