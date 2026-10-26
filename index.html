@@ -26,7 +26,7 @@
 <link rel="dns-prefetch" href="https://cdn.dexscreener.com">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" id="ati">
-<link rel="stylesheet" href="css/styles.css?v=20261024e"><link rel="manifest" id="mf">
+<link rel="stylesheet" href="css/styles.css?v=20261024e"><link rel="stylesheet" href="css/card-v2.css?v=20261026b"><link rel="manifest" id="mf">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -69,26 +69,6 @@
     <div class="al" style="flex-wrap:wrap"><input id="hca" aria-label="Token contract address" placeholder="Paste token contract (EVM or Solana)…" autocomplete="off" spellcheck="false"><button id="hgo" type="button">Scan free</button></div>
     <small>Market Risk Radar plus a GoPlus contract scan in seconds. Not financial advice.</small></div>
   <div class="wl" role="search" aria-label="Solana wallet lookup"><input id="wsearch" aria-label="Solana wallet address" placeholder="Or look up a Solana wallet address…" autocomplete="off" spellcheck="false"><button type="button" id="wgo">Look up wallet</button></div>
-  <div class="rbox psp" id="psp" aria-label="PSP token">
-    <div class="ph"><b><img class="pl" src="assets/psp-logo.png" alt="PSP logo" width="32" height="32"> $PSP, the PairScope coin</b><span class="pt" id="psptag">LIVE</span></div>
-    <p>$PSP is the community coin of PairScope.online. Burn 5,000,000 $PSP to get a token featured for 7 days, as an alternative to paying in SOL. The same listing checks apply, and the scanner is free to use without it. <a href="/burn" style="color:var(--accent)">Start a burn listing</a>.</p>
-    <div class="pca"><span>CA</span><code id="pspca">8VGiuPDzrvC9bXVHnt6bbriFMSS2TPXWMLth1joepump</code></div>
-    <div class="pb" id="pspbtns" hidden>
-      <button type="button" id="pspcopy">Copy CA</button>
-      <a class="pp" id="pspbuy" target="_blank" rel="noopener">Buy</a>
-      <a id="psppump" target="_blank" rel="noopener">pump.fun</a>
-      <a id="pspdex" target="_blank" rel="noopener">Chart</a>
-      <a id="pspscan" target="_blank" rel="noopener">Explorer</a>
-    </div>
-    <div class="pb psh" id="pspshare" hidden>
-      <span class="shl">Share $PSP</span>
-      <a id="pspx" target="_blank" rel="noopener" aria-label="Share $PSP on X">𝕏 Post</a>
-      <a id="psptg" target="_blank" rel="noopener" aria-label="Share $PSP on Telegram">Telegram</a>
-      <a id="pspwa" target="_blank" rel="noopener" aria-label="Share $PSP on WhatsApp">WhatsApp</a>
-      <button type="button" id="pspsharebtn">🔗 Share</button>
-    </div>
-    <small>$PSP is a community token, not an investment. Always check the contract address matches this card and the official PairScope Telegram. Not financial advice. <a href="#terms" data-terms="1" style="color:var(--accent)">Terms &amp; Disclaimer</a> · <a href="methodology.html" style="color:var(--accent)">How scores work</a> · <a href="/launchpad.html" style="color:var(--accent)">Launchpad</a></small>
-  </div>
   <div class="bar">
     <input id="q" aria-label="Search tokens" placeholder="Search token, e.g. pepe, bonk, sol…" autocomplete="off">
     <span class="live" id="live"><span class="dot"></span>Live · refreshing every 5s</span>
@@ -133,6 +113,26 @@
     <tbody id="body"></tbody>
   </table></div>
   <div id="alerts"></div>
+  <div class="rbox psp" id="psp" aria-label="PSP token">
+    <div class="ph"><b><img class="pl" src="assets/psp-logo.png" alt="PSP logo" width="32" height="32"> $PSP, the PairScope coin</b><span class="pt" id="psptag">LIVE</span></div>
+    <p>$PSP is the community coin of PairScope.online. Burn 5,000,000 $PSP to get a token featured for 7 days, as an alternative to paying in SOL. The same listing checks apply, and the scanner is free to use without it. <a href="/burn" style="color:var(--accent)">Start a burn listing</a>.</p>
+    <div class="pca"><span>CA</span><code id="pspca">8VGiuPDzrvC9bXVHnt6bbriFMSS2TPXWMLth1joepump</code></div>
+    <div class="pb" id="pspbtns" hidden>
+      <button type="button" id="pspcopy">Copy CA</button>
+      <a class="pp" id="pspbuy" target="_blank" rel="noopener">Buy</a>
+      <a id="psppump" target="_blank" rel="noopener">pump.fun</a>
+      <a id="pspdex" target="_blank" rel="noopener">Chart</a>
+      <a id="pspscan" target="_blank" rel="noopener">Explorer</a>
+    </div>
+    <div class="pb psh" id="pspshare" hidden>
+      <span class="shl">Share $PSP</span>
+      <a id="pspx" target="_blank" rel="noopener" aria-label="Share $PSP on X">𝕏 Post</a>
+      <a id="psptg" target="_blank" rel="noopener" aria-label="Share $PSP on Telegram">Telegram</a>
+      <a id="pspwa" target="_blank" rel="noopener" aria-label="Share $PSP on WhatsApp">WhatsApp</a>
+      <button type="button" id="pspsharebtn">🔗 Share</button>
+    </div>
+    <small>$PSP is a community token, not an investment. Always check the contract address matches this card and the official PairScope Telegram. Not financial advice. <a href="#terms" data-terms="1" style="color:var(--accent)">Terms &amp; Disclaimer</a> · <a href="methodology.html" style="color:var(--accent)">How scores work</a> · <a href="/launchpad.html" style="color:var(--accent)">Launchpad</a></small>
+  </div>
   <div class="soc">
     <span>Follow PairScope</span>
     <a class="sx" href="https://x.com/PairScopescreen" target="_blank" rel="noopener" aria-label="PairScope on X"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>X</a>
@@ -231,12 +231,12 @@
 <script src="js/hot-cards.js?v=20261024e"></script>
 <script src="js/checker-seo.js?v=20261024e"></script>
 <script src="js/row-sparks.js?v=20261024e"></script>
-<script src="js/card-extras.js?v=20261024e"></script>
+<script src="js/card-extras.js?v=20261026b"></script>
  <script src="js/pump-live.js?v=20261026f"></script>
 <script src="js/psp.js?v=20261024e"></script>
 <script src="js/deployer.js?v=20261024e"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "941b5966f6194fd1b04a161bb81adb5d"}'></script><!-- End Cloudflare Web Analytics -->
-<script src="js/reactions.js?v=20261024e"></script>
+<script src="js/reactions.js?v=20261026b"></script>
 <script src="wallet-search.js"></script>
 </body>
 </html>

@@ -14,7 +14,7 @@ function paint(el) {
   var counts = data.counts || {};
   var mine = data.mine || [];
   el.innerHTML = REACTIONS.map(function (x) {
-    return '<button class="rx ' + (mine.indexOf(x.type) > -1 ? 'on' : '') +
+    return '<button class="rx ' + (mine.indexOf(x.type) > -1 ? 'on' : '') + (counts[x.type] ? '' : ' z') +
       '" data-type="' + x.type + '">' + x.icon + ' <b>' + (counts[x.type] || 0) + '</b></button>';
   }).join('');
   el.querySelectorAll('.rx').forEach(function (b) {

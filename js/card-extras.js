@@ -47,9 +47,9 @@ function secParse(t,isSol){
 function secHTML(r){
   var s=SEC[key(r)];if(s===undefined)return'<span style="color:var(--muted);font-size:12px">Loading security data\u2026</span>';
   if(!s)return'<span style="color:var(--muted);font-size:12px">Security data unavailable for this token</span>';
-  var tp=s.top===null?null:Math.round(s.top*100);
-  return chip("Holders "+(s.hc===null?"\u2013":s.hc.toLocaleString()),MU)
-   +chip("Top 10 "+(tp===null?"\u2013":tp+"%"),tp===null?MU:tp>=50?RD:tp>=30?AM:GR)
+  var tp=s.top===null?null:Math.round(s.top*100);var noH=s.hc===null&&tp===null;
+  return (noH?chip(s.sol?"Holder data: EVM only":"Holder data unavailable",MU):chip("Holders "+(s.hc===null?"\u2013":s.hc.toLocaleString()),MU)
+   +chip("Top 10 "+(tp===null?"\u2013":tp+"%"),tp===null?MU:tp>=50?RD:tp>=30?AM:GR))
    +chip(s.mint===null?"Mint \u2013":s.mint?"Mint active":"Mint revoked",s.mint===null?MU:s.mint?RD:GR)
    +(s.sol?chip(s.frz===null?"Freeze \u2013":s.frz?"Freeze active":"Freeze revoked",s.frz===null?MU:s.frz?RD:GR)
           :chip(s.frz===null?"Pause \u2013":s.frz?"Pausable":"Not pausable",s.frz===null?MU:s.frz?RD:GR))}
@@ -71,11 +71,14 @@ function flushSec(){
       }).catch(function(){ch.forEach(function(r){delete sp[key(r)];SEC[key(r)]=null});refreshSoc()})
     })(by[c].slice(i,i+30))})
 }
+function safetyRing(r){
+  var v=Math.max(0,Math.min(100,Math.round(+r.rs||0))),k=typeof rl==="function"?rl(v):[v>=75?"Lower risk":v>=50?"Caution":"High risk",v>=75?"g":v>=50?"y":"r"],C=188.5;
+  return'<div class="pxsf pxsf-'+k[1]+'"><svg viewBox="0 0 72 72" width="72" height="72" role="img" aria-label="Safety score '+v+' out of 100"><circle class="pxsf-t" cx="36" cy="36" r="30" fill="none" stroke-width="7"/><circle class="pxsf-v" cx="36" cy="36" r="30" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+(C*v/100).toFixed(1)+' '+C+'" transform="rotate(-90 36 36)"/><text x="36" y="43" text-anchor="middle" font-size="22" font-weight="700">'+v+'</text></svg><div class="pxsf-x"><b>Safety: '+k[0]+'</b><span>Market risk radar. Not an audit.</span></div></div>'}
 function html(r){
   var tf=TFS[key(r)]||"24h",d=TF.filter(function(x){return x[0]===tf})[0],
   ch=+r[d[1]]||0,vol=+r[d[2]]||0,b=+r[d[3]]||0,s=+r[d[4]]||0,t=b+s,bp=t?Math.round(b/t*100):50,
   up=ch>=0,dead=rugged(r);
-  return '<div class="pxh">'+(dead?'<span class="pxr">RUGGED</span>':'')+'<span class="pxk">FDV <b>'+fm(r.f)+'</b></span><span class="pxk">Age <b>'+fage(r.t)+'</b></span><span class="pxk">Txns <b>'+(r.tx||0).toLocaleString()+'</b></span></div>'
+  return safetyRing(r)+'<div class="pxh">'+(dead?'<span class="pxr">RUGGED</span>':'')+'<span class="pxk">FDV <b>'+fm(r.f)+'</b></span><span class="pxk">Age <b>'+fage(r.t)+'</b></span><span class="pxk">Txns <b>'+(r.tx||0).toLocaleString()+'</b></span></div>'
   +'<div class="pxg" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'+secHTML(r)+'</div>'
   +'<div class="pxt" role="group" aria-label="Timeframe">'+TF.map(function(x){return '<button type="button" data-px="tf" data-v="'+x[0]+'" class="'+(x[0]===tf?'on':'')+'">'+x[0]+'</button>'}).join("")+'<b class="'+(up?'up':'down')+'">'+(up?'+':'')+ch.toFixed(2)+'%</b></div>'
   +'<div class="pxl"><span>Buys '+b.toLocaleString()+'</span><span>Vol '+fm(vol)+' \u00b7 '+tf+'</span><span>Sells '+s.toLocaleString()+'</span></div>'
