@@ -1,1 +1,27 @@
-{"updated":"","entries":[]}
+{
+ "updated": "2026-10-26",
+ "entries": [
+  {
+   "s": "Bow",
+   "c": "solana",
+   "a": "5qDiSWLy5mXog6L5u1rZGwCerDN29X5tFtVBp8j5pump",
+   "d": "2026-10-26",
+   "rs": 41,
+   "why": "Launched under 1 hour ago; Below-average liquidity ($32.7K); Volume 42x liquidity",
+   "o": "pending",
+   "p0": 0.0001423,
+   "l0": 32718
+  },
+  {
+   "s": "HOOKER",
+   "c": "solana",
+   "a": "82FEcWhKWAhm4QdqV5oCr7NDgXRQuXbACAstBqrJhook",
+   "d": "2026-10-26",
+   "rs": 42,
+   "why": "Less than 24 hours old; Low liquidity ($12.0K); Volume 29x liquidity",
+   "o": "pending",
+   "p0": 0.00002527,
+   "l0": 11981
+  }
+ ]
+}

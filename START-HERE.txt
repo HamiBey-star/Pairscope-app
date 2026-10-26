@@ -1,0 +1,13 @@
+PairScope daily track-record update (about 1 minute)
+
+One time: install Node.js (the LTS version) from https://nodejs.org
+
+Every day:
+1. Double-click  update-and-pack.bat   (Windows)   or   update-and-pack.command   (Mac).
+   It finds new risky Solana pairs, checks the ones flagged 7+ days ago, and saves the results.
+2. It creates  pairscope-upload.zip  in this folder.
+3. Upload that zip to your site (same way you upload now).
+
+Nothing is hand-picked and nothing is invented: the script only records what the market data shows.
+If an update fails, nothing is changed. Just run it again later.
+Keep this whole folder. Your flagged-token history lives in data/track-record.json.

@@ -27,3 +27,14 @@ Not financial advice.
 
 ## Still to do
 - Remove `'unsafe-inline'` from `style-src` (about 80 inline style attributes remain)
+
+## Track record page
+- `track-record.html` + `js/track-record.js` + `css/track.css` render `data/track-record.json`.
+- Add one object per flagged token to `entries`, then set `updated` to today's date (YYYY-MM-DD). Never delete entries; add a `n` note to correct one.
+- Fields: `s` symbol, `c` chain (e.g. solana), `a` token address, `d` date flagged, `rs` Risk score when flagged, `why` short reason, `o` outcome (`pending`, `rugged`, `down50`, `mixed`, `up`), `oc` date checked, `n` optional note.
+- Example: `{"s":"EXAMPLE","c":"solana","a":"<address>","d":"2026-10-26","rs":42,"why":"Liquidity under $5K, 90% of trades are buys","o":"pending"}`
+
+### Automatic updates (GitHub Actions)
+- `scripts/track.mjs` flags up to 5 new Solana pairs a day (liquidity >= $10K, Risk < 50) and judges entries after 7 days. Its `riskCalc` is a port of `riskCalc()` in `js/core.js`; if you change one, change the other.
+- `.github/workflows/track-record.yml` runs it daily at 06:15 UTC and commits `data/track-record.json`. It needs the site to be a Git repo with a Git-connected Cloudflare Pages deploy so each commit redeploys. Run it by hand from the Actions tab (workflow_dispatch) to test.
+- The `scripts/` and `.github/` folders are not needed on the live site. A plain zip upload will publish them, which is harmless (no secrets in them).
