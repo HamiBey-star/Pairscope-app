@@ -4,7 +4,7 @@ function saveW(){try{localStorage.setItem("ps_watch",JSON.stringify(W))}catch(e)
 function key(r){return r.c+"|"+r.addr}
 var A=[];try{A=JSON.parse(localStorage.getItem("ps_alerts")||"[]")}catch(e){}
 function saveA(){try{localStorage.setItem("ps_alerts",JSON.stringify(A))}catch(e){}syncAlerts()}
-var onlyRk=false,D=[],mode="trending",term="",chain="all",minLiq=false,sortK="v",dir=-1,timer,loading=false,reqId=0;
+var onlyRk=false,D=[],mode="new",term="",chain="all",minLiq=false,sortK="v",dir=-1,timer,loading=false,reqId=0;
 var $=function(i){return document.getElementById(i)};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function safeUrl(u,c,p,a){if(c==="solana"&&/pump$/.test(a||""))return"https://pump.fun/coin/"+a;return/^https:\/\/dexscreener\.com\//.test(u||"")?u:"https://dexscreener.com/"+encodeURIComponent(c||"")+"/"+encodeURIComponent(p||"")}

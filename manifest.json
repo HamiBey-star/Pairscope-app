@@ -1,7 +1,7 @@
 {
   "name": "PairScope",
   "short_name": "PairScope",
-  "description": "Live DEX pair scanner with Heat scores, Risk Radar and a contract checker.",
+  "description": "New Solana pairs, risk-checked: Heat scores, Risk Radar and a contract check.",
   "start_url": "/","id": "/",
   "orientation": "portrait",
   "scope": "/",

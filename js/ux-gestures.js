@@ -62,7 +62,7 @@ try{
   png(192,112,function(p192){png(512,112,function(p512){
     var icons=p192&&p512?[{src:p192,sizes:"192x192",type:"image/png",purpose:"any"},{src:p512,sizes:"512x512",type:"image/png",purpose:"any"}]:[{src:svgUrl(112),sizes:"any",type:"image/svg+xml",purpose:"any"}];
     var base=location.href.split("#")[0].split("?")[0];
-    var man={name:"PairScope",short_name:"PairScope",description:"Live DEX pair scanner with Heat scores, Risk Radar and a contract security checker.",start_url:base,scope:base.replace(/[^\/]*$/,""),display:"standalone",background_color:"#0b0e11",theme_color:"#0b0e11",icons:icons};
+    var man={name:"PairScope",short_name:"PairScope",description:"New Solana pairs, risk-checked: Heat scores, Risk Radar and a contract check.",start_url:base,scope:base.replace(/[^\/]*$/,""),display:"standalone",background_color:"#0b0e11",theme_color:"#0b0e11",icons:icons};
     try{if(mf)mf.href=URL.createObjectURL(new Blob([JSON.stringify(man)],{type:"application/manifest+json"}))}catch(e){}
   })});
   try{if("serviceWorker" in navigator)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})}).catch(function(){});if(window.caches)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k)})}).catch(function(){})}catch(e){}
