@@ -80,12 +80,12 @@ tbody tr td:nth-child(12){display:none}
 .rx.on{opacity:1;border-color:var(--accent);background:rgba(45,212,191,.14);box-shadow:none}
 }
 
-/* nav: brighter inactive tabs, clear current tab, Checker kept as an intentional call to action */
+/* nav: every tab is a visible pill; the current tab is stronger */
 @media(max-width:700px){
-#psnav button:not(.on){color:#c3cde0}
-#psnav button:not(.on) i{color:#c3cde0;filter:none}
-#psnav button.on{color:var(--accent);background:rgba(45,212,191,.18);box-shadow:inset 0 0 0 1px rgba(45,212,191,.5)}
+#psnav{gap:4px;padding:6px}
+#psnav button{flex:1;min-width:0;padding:6px 2px;border-radius:14px;font-size:11.5px}
+#psnav button:not(.on){color:#c3cde0;background:rgba(45,212,191,.08);box-shadow:inset 0 0 0 1px rgba(45,212,191,.28)}
+#psnav button:not(.on) i{color:var(--accent);filter:none}
+#psnav button.on{color:var(--accent);background:rgba(45,212,191,.24);box-shadow:inset 0 0 0 2px var(--accent);font-weight:700}
 #psnav button.on i{color:var(--accent);filter:none}
-#psnav button[data-n="check"]:not(.on){color:var(--accent);background:rgba(45,212,191,.08);box-shadow:inset 0 0 0 1px rgba(45,212,191,.28)}
-#psnav button[data-n="check"]:not(.on) i{color:var(--accent);filter:none}
 }
