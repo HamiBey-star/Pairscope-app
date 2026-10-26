@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Track record: tokens PairScope flagged and what happened</title>
+<meta name="description" content="A public log of tokens PairScope flagged as high risk, with the date, the score at the time and what happened next. Misses included. Not financial advice.">
+<meta name="theme-color" content="#0b1220">
+<link rel="canonical" href="https://pairscope.online/track-record">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="css/methodology.css">
+<link rel="stylesheet" href="css/track.css?v=20261026c">
+</head>
+<body>
+<main class="wrap">
+<header class="top"><a class="brand" href="/">PairScope</a><a class="back" href="/">← Back to scanner</a></header>
+<h1>Track record</h1>
+<p class="muted">Tokens PairScope flagged as high risk, and what happened to them. Entries are added with a date when they are flagged, then checked again after 7 days. Misses are published too.</p>
+
+<div class="box"><b>Read this first.</b> This log shows how our automated Risk Radar has done so far. It is not an audit, not a promise about any token, and not financial advice. A small sample proves little, so look at the numbers of entries before the percentages.</div>
+
+<section class="stats" aria-label="Summary">
+  <div class="stat"><span class="sv" id="st-total">0</span><span class="sl">Flagged</span></div>
+  <div class="stat"><span class="sv" id="st-bad">0</span><span class="sl">Rugged or dropped 50%+</span></div>
+  <div class="stat"><span class="sv" id="st-mixed">0</span><span class="sl">Mixed or flat</span></div>
+  <div class="stat"><span class="sv" id="st-up">0</span><span class="sl">Went up (our misses)</span></div>
+  <div class="stat"><span class="sv" id="st-pend">0</span><span class="sl">Still pending</span></div>
+</section>
+<p class="muted" id="st-note">Resolved means checked after 7 days.</p>
+
+<section id="share" hidden aria-label="Share on X"><h2>Share on X</h2><p class="muted">Only you see this, because the address ends with #share. Edit the text if you like, then copy it or open X.</p><div id="share-body"></div></section>
+
+<h2>Flagged tokens</h2>
+<p class="muted" id="status" role="status">Loading the record…</p>
+<ul class="entries" id="entries"></ul>
+<noscript><p class="muted">This page needs JavaScript to load the log.</p></noscript>
+
+<h2>How entries are chosen and judged</h2>
+<ul>
+<li><b>Flagged:</b> an automated job runs once a day. It takes the newest Solana pairs from the DexScreener latest-profiles feed, keeps those with liquidity of at least $10,000 and a Risk Radar score below 50, and logs the first 5. Nothing is hand-picked. The score, price and liquidity at that moment are saved with the date.</li>
+<li><b>Checked after 7 days:</b> the same job looks at the pair again and records one outcome. If no price data can be found, the entry stays pending rather than being guessed.</li>
+<li><b>Rugged:</b> liquidity fell below 5% of what it was when flagged, or the price fell 90% or more and liquidity is under $1,000.</li>
+<li><b>Dropped 50%+:</b> price is down 50% or more from the flag date, not rugged.</li>
+<li><b>Mixed or flat:</b> price moved less than 50% down and did not clearly rise.</li>
+<li><b>Went up (miss):</b> price is higher than at the flag date. We publish these as misses.</li>
+<li><b>Pending:</b> fewer than 7 days since the flag.</li>
+<li>Entries are never deleted. A correction is added as a note on the entry.</li>
+</ul>
+
+<h2>What this log cannot tell you</h2>
+<ul>
+<li>It only covers tokens we chose to record, not every token we scored.</li>
+<li>A token can fall for reasons the score did not predict, and a flagged token can still go up.</li>
+<li>How we scored them is explained on the <a href="methodology.html">methodology page</a>.</li>
+</ul>
+</main>
+<script src="js/track-record.js?v=20261026c"></script>
+</body>
+</html>
