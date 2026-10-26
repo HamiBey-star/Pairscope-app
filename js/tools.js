@@ -42,7 +42,31 @@ function plogo(w,o){var u=[],i=0;if(/^https:\/\//.test(o.im||""))u.push(o.im);if
   function av(){var h=0,t=String(o.s||"?"),b=document.createElement("b");for(var j=0;j<t.length;j++)h=(h*31+t.charCodeAt(j))%360;w.textContent="";b.textContent=t.replace(/^[^A-Za-z0-9]+/,"").charAt(0).toUpperCase()||"?";b.style.background="hsl("+h+",45%,38%)";w.appendChild(b)}
   function next(){if(i>=u.length)return av();var m=new Image();m.alt="";m.width=m.height=26;m.referrerPolicy="no-referrer";m.onerror=next;m.src=u[i++];w.textContent="";w.appendChild(m)}
   next()}
-function paperLogos(){[].forEach.call(document.querySelectorAll("#pxm .tk[data-pi],#pxm .tk[data-pb]"),function(w){var pi=w.getAttribute("data-pi"),o=pi!==null?PA.pos[+pi]:(PB&&{im:PB.img,c:PB.c,a:PB.addr,s:PB.s});if(o)plogo(w,o)})}
+function paperLogos(){[].forEach.call(document.querySelectorAll("#pxm .tk[data-pi],#pxm .tk[data-pb],#pxm .tk[data-ph]"),function(w){var pi=w.getAttribute("data-pi"),ph=w.getAttribute("data-ph"),o=pi!==null?PA.pos[+pi]:ph!==null?PA.hist[+ph]:(PB&&{im:PB.img,c:PB.c,a:PB.addr,s:PB.s});if(o)plogo(w,o)})}
+/* share a paper trade win or loss as a picture card (coin picture, P/L, entry and exit) */
+function paperShare(o){var pct=+o.pct||0;if(Math.abs(o.pl)<0.005)o.pl=0;if(Math.abs(pct)<0.05)pct=0;var up=o.pl>=0,col=up?"#2ecc71":"#ff5c5c";toast("Making your card...");
+  cardLogo({c:o.c,addr:o.a,img:o.im,s:o.s},function(im){var c=document.createElement("canvas");c.width=1000;c.height=525;var g=c.getContext("2d"),gr=g.createLinearGradient(0,0,1000,525);
+    gr.addColorStop(0,"#0b1220");gr.addColorStop(1,up?"#0f2a2a":"#2a1420");g.fillStyle=gr;g.fillRect(0,0,1000,525);
+    function put(t,x,y,w,px,wt,fill){var f=px;do{g.font=wt+" "+f+"px system-ui,sans-serif";f-=4}while(g.measureText(t).width>w&&f>22);g.fillStyle=fill;g.fillText(t,x,y)}
+    put(o.open?"Paper trade, open position":"Paper trade, closed",50,70,580,28,"600","#8b95a1");
+    put(String(o.s),50,150,580,72,"700","#e6e8ea");
+    put(String(o.c||""),50,192,580,28,"400","#8b95a1");
+    put((pct>0?"+":"")+pct.toFixed(1)+"%",50,310,600,120,"700",col);
+    put(money(o.pl),50,372,600,48,"700",col);
+    put("Entry "+fprice(o.e)+"   "+(o.open?"Now ":"Exit ")+fprice(o.x),50,425,600,28,"400","#8b95a1");
+    put("Invested $"+(+o.u||0).toFixed(2)+"   Simulated, no real funds",50,460,600,24,"400","#8b95a1");
+    put("PairScope",50,503,300,30,"700","#00e0b8");
+    var cx=800,cy=235,R=125;g.save();g.beginPath();g.arc(cx,cy,R,0,6.2832);g.closePath();g.clip();
+    if(im){var z=Math.min(im.width,im.height)||1;g.drawImage(im,(im.width-z)/2,(im.height-z)/2,z,z,cx-R,cy-R,2*R,2*R)}
+    else{var sy=String(o.s||"?"),h=0,j;for(j=0;j<sy.length;j++)h=(h*31+sy.charCodeAt(j))%360;g.fillStyle="hsl("+h+",45%,38%)";g.fillRect(cx-R,cy-R,2*R,2*R);g.fillStyle="#fff";g.font="700 130px system-ui,sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText((sy.replace(/^[^A-Za-z0-9]+/,"").charAt(0)||"?").toUpperCase(),cx,cy+6);g.textAlign="left";g.textBaseline="alphabetic"}
+    g.restore();g.lineWidth=8;g.strokeStyle=col;g.beginPath();g.arc(cx,cy,R+8,0,6.2832);g.stroke();
+    g.fillStyle="#8b95a1";g.font="26px system-ui,sans-serif";g.textAlign="right";g.fillText("pairscope.online",950,503);g.textAlign="left";
+    var u=location.origin;try{if(o.a&&o.c)u=shareUrl({addr:o.a,c:o.c})}catch(e){}
+    var tx="Paper trade: "+o.s+" "+(pct>0?"+":"")+pct.toFixed(1)+"% ("+money(o.pl)+") on PairScope\n"+u,fn=(String(o.s).replace(/[^A-Za-z0-9_-]/g,"")||"coin")+"-paper-trade.png";
+    c.toBlob(function(b){try{var f=new File([b],fn,{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],text:tx}).catch(function(){});return}}catch(e){}
+      try{navigator.clipboard.writeText(tx).catch(function(){})}catch(e){}var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=fn;a.click();toast("Text copied, picture saved")})})}
+function paperShareOpen(i){var p=PA.pos[i];if(!p)return;var n=p.last||p.e;paperShare({s:p.s,c:p.c,a:p.a,im:p.im,pl:p.q*n-p.u,pct:(n/p.e-1)*100,e:p.e,x:n,u:p.u,open:1})}
+function paperShareHist(j){var t=PA.hist[j];if(!t)return;paperShare({s:t.s,c:t.c,a:t.a,im:t.im,pl:t.pl,pct:t.u>0?t.pl/t.u*100:0,e:t.e,x:t.x,u:t.u,open:0})}
 function paperAdd(r){if(!r||!(r.p>0)){toast("Price not available yet");return}PB=r;
   modal('<h3>💼 Paper buy <span class="tk" data-pb="1"></span>'+X(r.s)+'</h3><p class="q">Price '+fprice(r.p)+' · Cash $'+PA.cash.toFixed(2)+'</p><p><input id="pxa" type="number" inputmode="decimal" min="1" step="any" value="'+Math.min(100,Math.floor(PA.cash))+'" aria-label="Amount in USD"></p><p><button class="chip" data-x="pq" data-v="25">25%</button> <button class="chip" data-x="pq" data-v="50">50%</button> <button class="chip" data-x="pq" data-v="100">Max</button> <button class="chip" data-x="pconf">✓ Buy</button></p><p class="q">Simulated only. No wallet or real funds.</p>');
   paperLogos();setTimeout(function(){var i=$("pxa");if(i)i.focus()},50)}
@@ -50,7 +74,7 @@ function paperConfirm(){var r=PB,a=parseFloat($("pxa")&&$("pxa").value);if(!r||!
   var k=key(r),q=a/r.p,x=PA.pos.filter(function(p){return p.k===k})[0];PA.cash-=a;
   if(x){x.q+=q;x.u+=a;x.e=x.u/x.q;x.last=r.p}else PA.pos.push({k:k,s:r.s,c:r.c,a:r.addr,e:r.p,q:q,u:a,t:Date.now(),last:r.p,im:r.img||""});
   savePA();PB=null;toast("💼 Bought $"+a.toFixed(2)+" of "+r.s);paperShow()}
-function paperSell(i,f){var p=PA.pos[i];if(!p)return;var n=p.last||p.e,q=p.q*f,cost=p.u*f,out=q*n;PA.cash+=out;PA.hist.push({s:p.s,pl:out-cost,t:Date.now()});if(PA.hist.length>200)PA.hist.shift();
+function paperSell(i,f){var p=PA.pos[i];if(!p)return;var n=p.last||p.e,q=p.q*f,cost=p.u*f,out=q*n;PA.cash+=out;PA.hist.push({s:p.s,pl:out-cost,t:Date.now(),c:p.c,a:p.a,im:p.im||"",u:cost,e:p.e,x:n});if(PA.hist.length>200)PA.hist.shift();
   if(f>=0.999)PA.pos.splice(i,1);else{p.q-=q;p.u-=cost}savePA();toast("Sold "+Math.round(f*100)+"% of "+p.s+" ("+money(out-cost)+")");paperShow()}
 function paperShow(){
   if(!PA.pos.length&&!PA.hist.length){modal('<h3>💼 Paper trades</h3><p class="q">No positions yet. Tap “Paper buy” on any row or pair. You start with $'+PSTART.toLocaleString()+' of virtual cash. No wallet or real funds involved.</p>');return}
@@ -59,12 +83,14 @@ function paperShow(){
 function liveMap(){var m={};try{D.forEach(function(r){m[key(r)]=r})}catch(e){}return m}
 function paperRender(m){var val=0,unr=0,h="";
   PA.pos.forEach(function(p,i){var r=m[p.k];if(r&&r.p>0)p.last=r.p;if(r&&r.img&&!p.im)p.im=r.img;var n=p.last||p.e,v=p.q*n,d=v-p.u,pl=(n/p.e-1)*100;if(Math.abs(d)<0.005)d=0;if(Math.abs(pl)<0.05)pl=0;val+=v;unr+=d;
-    h+='<div style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0">'+'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="display:flex;align-items:center;font-weight:700;font-size:16px;min-width:0"><span class="tk" data-pi="'+i+'"></span><span>'+X(p.s)+'</span></div>'+'<div style="text-align:right;font-weight:700"><span class="'+cl(pl)+'">'+sg(pl)+'</span> <span class="'+cl(d)+'">'+money(d)+'</span></div></div>'+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:8px 12px;margin:10px 0">'+pc('Amount',fq(p.q))+pc('Cost','$'+p.u.toFixed(2))+pc('Entry',fprice(p.e))+pc('Now',fprice(n)+(r?'':' <span class="q" title="Live price unavailable, showing last known">•</span>'))+pc('Value','$'+v.toFixed(2))+'</div>'+'<div style="white-space:nowrap"><button class="chip" data-x="psell" data-i="'+i+'" data-f="0.5">½</button> <button class="chip" data-x="psell" data-i="'+i+'" data-f="1">Sell all</button></div></div>'});
+    h+='<div style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0">'+'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="display:flex;align-items:center;font-weight:700;font-size:16px;min-width:0"><span class="tk" data-pi="'+i+'"></span><span>'+X(p.s)+'</span></div>'+'<div style="text-align:right;font-weight:700"><span class="'+cl(pl)+'">'+sg(pl)+'</span> <span class="'+cl(d)+'">'+money(d)+'</span></div></div>'+'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:8px 12px;margin:10px 0">'+pc('Amount',fq(p.q))+pc('Cost','$'+p.u.toFixed(2))+pc('Entry',fprice(p.e))+pc('Now',fprice(n)+(r?'':' <span class="q" title="Live price unavailable, showing last known">•</span>'))+pc('Value','$'+v.toFixed(2))+'</div>'+'<div style="white-space:nowrap"><button class="chip" data-x="psell" data-i="'+i+'" data-f="0.5">½</button> <button class="chip" data-x="psell" data-i="'+i+'" data-f="1">Sell all</button> <button class="chip" data-x="pshare" data-i="'+i+'">📤 Share</button></div></div>'});
   savePA();
   var real=PA.hist.reduce(function(a,t){return a+t.pl},0),w=PA.hist.filter(function(t){return t.pl>0}).length,eq=PA.cash+val,tot=eq-PSTART;if(Math.abs(tot)<0.005)tot=0;
+  var ch="";PA.hist.map(function(t,j){return t.c?j:-1}).filter(function(j){return j>=0}).slice(-5).reverse().forEach(function(j){var t=PA.hist[j],pp=t.u>0?t.pl/t.u*100:0;
+    ch+='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 0"><div style="display:flex;align-items:center;min-width:0"><span class="tk" data-ph="'+j+'"></span><b>'+X(t.s)+'</b></div><div style="display:flex;align-items:center;gap:8px"><span class="'+cl(t.pl)+'">'+sg(pp)+' '+money(t.pl)+'</span><button class="chip" data-x="phshare" data-i="'+j+'">📤 Share</button></div></div>'});
   var html=('<h3>💼 Paper trades</h3><p>Equity <b>$'+eq.toFixed(2)+'</b> · Cash $'+PA.cash.toFixed(2)+' · Total <b class="'+cl(tot)+'">'+money(tot)+'</b></p>'+
     (PA.pos.length?'<div>'+h+'</div>':'<p class="q">No open positions. Tap “Paper buy” under any pair.</p>')+
-    '<p class="q">Open <span class="'+cl(unr)+'">'+money(unr)+'</span> · Realized <span class="'+cl(real)+'">'+money(real)+'</span>'+(PA.hist.length?' · Win rate '+Math.round(w/PA.hist.length*100)+'% ('+PA.hist.length+' closed)':'')+'</p>'+
+    (ch?'<p class="q" style="margin:14px 0 2px">Recent closed trades</p>'+ch:'')+'<p class="q">Open <span class="'+cl(unr)+'">'+money(unr)+'</span> · Realized <span class="'+cl(real)+'">'+money(real)+'</span>'+(PA.hist.length?' · Win rate '+Math.round(w/PA.hist.length*100)+'% ('+PA.hist.length+' closed)':'')+'</p>'+
     '<p><button class="chip" data-x="prst">Reset $'+PSTART.toLocaleString()+'</button></p><p class="q">Simulated only. Ignores fees, slippage and liquidity. Not financial advice.</p>');
   if(PV&&html===LASTH&&$("pxm").classList.contains("on"))return;LASTH=html;modal(html);PV=true;paperLogos()}
 /* Paper buy button on every table row (click does not open the detail view) */
@@ -125,7 +151,7 @@ document.addEventListener("click",function(e){var b=e.target.closest&&e.target.c
   else if(x==="ps"){var n=prompt("Preset name:");if(n){PR[n]=Object.assign({},F);LS.s("ps_pr",PR);syncUI();$("fpre").value=n}}
   else if(x==="pd"){var s=$("fpre").value;if(s){delete PR[s];LS.s("ps_pr",PR);syncUI()}}
   else if(x==="fr"){F={liq:0,age:0,heat:0,safe:0};LS.s("ps_f",F);syncUI();applyF()}
-  else if(x==="psell")paperSell(+b.getAttribute("data-i"),+b.getAttribute("data-f"));else if(x==="pconf")paperConfirm();else if(x==="pq"){var ia=$("pxa");if(ia)ia.value=(Math.floor(PA.cash*(+b.getAttribute("data-v"))/100*100)/100)}else if(x==="prst"){if(confirm("Reset paper account to $"+PSTART+"?")){PA={cash:PSTART,pos:[],hist:[]};savePA();paperShow()}}
+  else if(x==="pshare")paperShareOpen(+b.getAttribute("data-i"));else if(x==="phshare")paperShareHist(+b.getAttribute("data-i"));else if(x==="psell")paperSell(+b.getAttribute("data-i"),+b.getAttribute("data-f"));else if(x==="pconf")paperConfirm();else if(x==="pq"){var ia=$("pxa");if(ia)ia.value=(Math.floor(PA.cash*(+b.getAttribute("data-v"))/100*100)/100)}else if(x==="prst"){if(confirm("Reset paper account to $"+PSTART+"?")){PA={cash:PSTART,pos:[],hist:[]};savePA();paperShow()}}
   else if(x==="cclr"){CP=[];$("pxc").textContent=0;cmpShow()}
   else if(x==="sh"&&r)share(r);else if(x==="pb"&&r)paperAdd(r);
   else if(x==="cm"&&r){if(CP.some(function(p){return key(p)===key(r)}))CP=CP.filter(function(p){return key(p)!==key(r)});else if(CP.length>=3)return toast("Compare holds up to 3 pairs");else CP.push(Object.assign({},r));$("pxc").textContent=CP.length;toast("Comparing "+CP.length+" pair"+(CP.length>1?"s":""))}});
