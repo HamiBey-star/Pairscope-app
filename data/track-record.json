@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "entries": [
   {
    "s": "Bow",
@@ -22,6 +22,17 @@
    "o": "pending",
    "p0": 0.00002527,
    "l0": 11981
+  },
+  {
+   "s": "HW",
+   "c": "solana",
+   "a": "8g6grwr9D1q3Ry99m62nkWo6mPfFaSSDRFmzDhf4pump",
+   "d": "2026-10-28",
+   "rs": 45,
+   "why": "Launched under 1 hour ago; Below-average liquidity ($25.8K); Volume 46x liquidity",
+   "o": "pending",
+   "p0": 0.00007325,
+   "l0": 25787
   }
  ]
 }
