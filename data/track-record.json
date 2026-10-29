@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "entries": [
   {
    "s": "Bow",
@@ -33,6 +33,17 @@
    "o": "pending",
    "p0": 0.00007325,
    "l0": 25787
+  },
+  {
+   "s": "MULTI",
+   "c": "solana",
+   "a": "9XwcqFsLTshVo7QwWyNmjVBsB982EW9C4YotSbpoxYYi",
+   "d": "2026-10-29",
+   "rs": 42,
+   "why": "Less than 24 hours old; Low liquidity ($13.3K); Volume 61x liquidity",
+   "o": "pending",
+   "p0": 0.00002356,
+   "l0": 13328
   }
  ]
 }
