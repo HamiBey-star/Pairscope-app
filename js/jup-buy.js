@@ -2,6 +2,9 @@
    on this page with the coin already selected. If the popup can't load, the normal jup.ag link opens instead. */
 (function(){
 var SRC="https://plugin.jup.ag/plugin-v1.js",p=null;
+var SOLM="So11111111111111111111111111111111111111112",viol=[];
+document.addEventListener("securitypolicyviolation",function(e){viol.push(e.violatedDirective+" blocked "+e.blockedURI)});
+function say(t){try{if(typeof toast==="function")return toast(t)}catch(x){}var d=document.getElementById("toast");if(d){d.textContent=t;d.className="on";setTimeout(function(){d.className=""},4500)}}
 /* EARN FEES: paste your Jupiter referral account key between the quotes (from referral.jup.ag).
    REF_FEE_BPS is your fee in basis points (100 = 1%). Jupiter's docs list 50 to 255 for referral fees.
    Leave REF_ACCOUNT empty to charge no fee. */
@@ -15,6 +18,10 @@ document.addEventListener("click",function(e){
   e.preventDefault();
   var inM=decodeURIComponent(m[0]),outM=decodeURIComponent(m[1]);
   load().then(function(){var fp={initialInputMint:inM,initialOutputMint:outM};if(REF_ACCOUNT){fp.referralAccount=REF_ACCOUNT;fp.referralFee=REF_FEE_BPS}window.Jupiter.init({displayMode:"modal",formProps:fp})})
-    .catch(function(){window.open(a.href,"_blank","noopener")});
+    .catch(function(err){
+      var mint=inM===SOLM?outM:inM;try{navigator.clipboard.writeText(mint)}catch(x){}
+      say("Swap popup unavailable"+(viol.length?" ["+viol[0]+"]":"")+". Contract copied: paste it in Jupiter.");
+      console.warn("PairScope Jupiter popup failed:",err,viol);
+      setTimeout(function(){window.open(a.href,"_blank","noopener")},1800)});
 },true);
 })();
