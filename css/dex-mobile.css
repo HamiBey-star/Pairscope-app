@@ -1,64 +1,84 @@
-/* PairScope mobile list (max-width 700px). Loaded last. Presentation only:
-   no JS, IDs or markup changed. Delete this file's <link> in index.html to roll back. */
+/* PairScope mobile list (max-width 700px). Loaded last. Presentation only. */
+.nm{display:none}
 @media(max-width:700px){
-:root{--bg:#0c0d0f;--panel:#141518;--line:#24272c;--muted:#8a8f98;--up:#16c784;--down:#ea3943;--accent:#08e0b8}
-body{background:var(--bg)}
+:root{--bg:#0c0d0f;--panel:#141518;--line:#2a2d33;--muted:#8a8f98;--up:#16c784;--down:#ea3943;--accent:#08e0b8}
+html,body{background:#0c0d0f!important}
+body::before,body::after{display:none!important}
 
-/* slim header: logo + name only */
+/* slim header */
 header.hd{min-height:44px;padding:0 4px;margin:0 0 4px}
 header.hd .hd-main{padding:0}
 header.hd h1{font-size:17px;margin:0}
 header.hd .hd-brand img{width:26px;height:26px}
 header.hd .hd-tag,header.hd .hd-chips,header.hd .hd-scope{display:none}
 
-/* list container: no card chrome */
-.tbl{background:none!important;border:0!important;border-radius:0;box-shadow:none;
-  -webkit-backdrop-filter:none;backdrop-filter:none;overflow:visible;max-height:none}
-#body tr{display:grid!important;grid-template-columns:1fr auto auto;column-gap:12px;row-gap:2px;
-  align-items:center;margin:0;padding:10px 4px;border:0;border-bottom:1px solid var(--line);
-  border-radius:0;background:transparent!important;box-shadow:none!important;
-  -webkit-backdrop-filter:none;backdrop-filter:none}
-#body tr:active{transform:none;background:rgba(255,255,255,.04)!important}
-
-/* show only: pair, price, 24h, volume, liquidity */
-#body tr>td{display:none!important;padding:0;border:0;margin:0;background:none}
-#body tr>td:nth-child(1),#body tr>td:nth-child(2),#body tr>td:nth-child(9),
-#body tr>td:nth-child(5),#body tr>td:nth-child(10){display:block!important}
-#body tr>td:before{content:none!important}
-
-/* line 1 */
-#body tr>td:nth-child(1){grid-column:1;grid-row:1;min-width:0;box-shadow:none;overflow:hidden;
-  white-space:nowrap;text-overflow:ellipsis}
-#body tr>td:nth-child(1)>:not(.star):not(.sym):not(.q){display:none!important}
-#body tr .sym{font-size:15px;font-weight:700}
-#body tr .q{font-size:12px;color:var(--muted)}
-#body tr>td:nth-child(2){grid-column:2;grid-row:1;font-size:14px;font-weight:600;text-align:right}
-#body tr>td:nth-child(9){grid-column:3;grid-row:1;min-width:64px;font-size:13px;font-weight:700;
-  text-align:right;padding:3px 6px;border-radius:6px}
-#body tr>td:nth-child(9).up{background:rgba(22,199,132,.14);color:var(--up)}
-#body tr>td:nth-child(9).down{background:rgba(234,57,67,.14);color:var(--down)}
-
-/* line 2: Vol and Liq */
-#body tr>td:nth-child(5){grid-column:1;grid-row:2;font-size:11.5px;color:var(--muted)}
-#body tr>td:nth-child(5):before{content:"Vol "!important;color:var(--muted)}
-#body tr>td:nth-child(10){grid-column:2/4;grid-row:2;font-size:11.5px;color:var(--muted);text-align:right}
-#body tr>td:nth-child(10):before{content:"Liq "!important;color:var(--muted)}
-
-/* anything the page injects into the row beyond cells (sparklines, chips, buttons) stays hidden */
-#body tr>:not(td){display:none!important}
-
-/* tabs and chips: compact pills */
-.tab,.chip{border-radius:999px;padding:5px 13px;font-size:12px}
-
-/* list first: checker box, wallet lookup and PSP card move below the pair list */
+/* list first, checker/wallet/PSP below */
 .wrap{display:flex;flex-direction:column}
 .wrap>*{order:10}
 .wrap>header.hd,.wrap>.bar,.wrap>#tabs,.wrap>.tabs,.wrap>.chips,.wrap>#pulse{order:1}
 .wrap>.tbl{order:5}
 .wrap>#hero,.wrap>.wl,.wrap>.psp,.wrap>#alerts{order:30}
 
-/* labels inline with their values; plain dark background like a DEX screener */
-#body tr>td:nth-child(5):before,#body tr>td:nth-child(10):before{display:inline!important;float:none!important;width:auto!important}
-html,body{background:#0c0d0f!important}
-body::before,body::after{display:none!important}
+.tbl{background:none!important;border:0!important;border-radius:0;box-shadow:none;
+  -webkit-backdrop-filter:none;backdrop-filter:none;overflow:visible;max-height:none}
+
+/* row = [picture + symbol/name] [age] [24h] [price] / [L] [V] */
+#body tr{display:grid!important;grid-template-columns:1fr auto auto auto;column-gap:10px;row-gap:6px;
+  align-items:center;margin:0;padding:10px 2px;border:0;border-bottom:1px solid var(--line);
+  border-radius:0;background:transparent!important;box-shadow:none!important;
+  -webkit-backdrop-filter:none;backdrop-filter:none}
+#body tr:active{transform:none;background:rgba(255,255,255,.04)!important}
+#body tr>td{display:none!important;padding:0;border:0;margin:0;background:none}
+#body tr>td:nth-child(1),#body tr>td:nth-child(2),#body tr>td:nth-child(3),
+#body tr>td:nth-child(5),#body tr>td:nth-child(9),#body tr>td:nth-child(10){display:block!important}
+#body tr>td:before{content:none!important}
+#body tr>:not(td){display:none!important}
+
+/* left cell: picture spans two lines, symbol over name */
+#body tr>td:nth-child(1){grid-column:1;grid-row:1/3;position:relative;min-width:0;overflow:hidden;box-shadow:none;
+  display:grid!important;grid-template-columns:56px 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center}
+#body tr>td:nth-child(1)>:not(.star):not(.sym):not(.q):not(.tk):not(.nm){display:none!important}
+#body tr .tk{grid-column:1;grid-row:1/3;margin:0;width:56px;height:56px;display:block}
+#body tr .tk img,#body tr .tk b{width:56px;height:56px;border-radius:12px;font-size:22px}
+#body tr .tk i{right:-4px;bottom:-4px;font-size:13px}
+#body tr .star{position:absolute;left:2px;top:2px;margin:0;padding:0;font-size:15px;line-height:1;z-index:2;
+  text-shadow:0 0 3px #000,0 0 6px #000}
+#body tr .sym{grid-column:2;grid-row:1;align-self:end;font-size:17px;font-weight:700;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#body tr .nm{display:block;grid-column:2;grid-row:2;align-self:start;font-size:14px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#body tr .nm:empty{display:none}
+#body tr .nm:empty+.q{display:block;grid-column:2;grid-row:2;align-self:start;font-size:13px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#body tr .nm:not(:empty)+.q{display:none}
+#body tr .q .rk{display:none}
+
+/* right side, line 1: age, 24h change, price */
+#body tr>td:nth-child(3){grid-column:2;grid-row:1;font-size:15px;font-weight:600;text-align:right;color:#fff}
+#body tr>td:nth-child(9){grid-column:3;grid-row:1;font-size:15px;font-weight:600;text-align:right;padding:0;background:none}
+#body tr>td:nth-child(9):before{display:inline!important;font-size:11px}
+#body tr>td:nth-child(9).up{color:var(--up)}
+#body tr>td:nth-child(9).up:before{content:"\25B2 "!important}
+#body tr>td:nth-child(9).down{color:var(--down)}
+#body tr>td:nth-child(9).down:before{content:"\25BC "!important}
+#body tr>td:nth-child(2){grid-column:4;grid-row:1;font-size:15px;font-weight:700;text-align:right;color:#4da3ff}
+
+/* line 2: L and V pills */
+#body tr>td:nth-child(10),#body tr>td:nth-child(5){align-self:center;justify-self:end;font-size:13px;color:#fff;
+  padding:3px 9px;border:1px solid var(--line);border-radius:7px;white-space:nowrap}
+#body tr>td:nth-child(10){grid-column:2/4;grid-row:2}
+#body tr>td:nth-child(5){grid-column:4;grid-row:2}
+#body tr>td:nth-child(10):before,#body tr>td:nth-child(5):before{display:inline!important;float:none!important;width:auto!important;color:var(--muted)}
+#body tr>td:nth-child(10):before{content:"L  "!important}
+#body tr>td:nth-child(5):before{content:"V  "!important}
+
+.tab,.chip{border-radius:999px;padding:5px 13px;font-size:12px}
+}
+@media(max-width:700px){
+/* market cap in the blue slot, price text hidden */
+#body tr>td:nth-child(2){font-size:0!important}
+#body tr>td:nth-child(2):after{content:attr(data-mc);font-size:15px;font-weight:700;color:#4da3ff}
+/* new pair (<24h) sprout icon */
+#body tr>td:nth-child(3).new:before{content:"\1F331 "!important;display:inline!important;font-size:13px}
+.wrap>#dxf{order:2}
 }

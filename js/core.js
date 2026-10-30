@@ -15,7 +15,7 @@ function pc(v){v=+v||0;return'<td class="'+(v>=0?"up":"down")+'">'+(v>=0?"+":"")
 function map(x){var pcg=x.priceChange||{},tx=(x.txns&&x.txns.h24)||{};
   var o={s:x.baseToken.symbol,q:x.quoteToken.symbol,c:x.chainId,dex:x.dexId,p:+x.priceUsd||0,m5:pcg.m5||0,h1:pcg.h1||0,h6:pcg.h6||0,h24:pcg.h24||0,
   v:(x.volume&&x.volume.h24)||0,l:(x.liquidity&&x.liquidity.usd)||0,f:x.fdv||0,t:x.pairCreatedAt||0,age:x.pairCreatedAt?Date.now()-x.pairCreatedAt:1e15,
-  tx:(tx.buys||0)+(tx.sells||0),b:tx.buys||0,sl:tx.sells||0,v5:(x.volume&&x.volume.m5)||0,v6:(x.volume&&x.volume.h6)||0,b5:(x.txns&&x.txns.m5&&x.txns.m5.buys)||0,s5:(x.txns&&x.txns.m5&&x.txns.m5.sells)||0,b6:(x.txns&&x.txns.h6&&x.txns.h6.buys)||0,s6:(x.txns&&x.txns.h6&&x.txns.h6.sells)||0,v1:(x.volume&&x.volume.h1)||0,b1:(x.txns&&x.txns.h1&&x.txns.h1.buys)||0,s1:(x.txns&&x.txns.h1&&x.txns.h1.sells)||0,url:safeUrl(x.url,x.chainId,x.pairAddress,x.baseToken.address),addr:x.baseToken.address,pair:x.pairAddress,img:(x.info&&x.info.imageUrl)||""};o.rs=riskCalc(o).s;heatCalc(o);return o}
+  tx:(tx.buys||0)+(tx.sells||0),b:tx.buys||0,sl:tx.sells||0,v5:(x.volume&&x.volume.m5)||0,v6:(x.volume&&x.volume.h6)||0,b5:(x.txns&&x.txns.m5&&x.txns.m5.buys)||0,s5:(x.txns&&x.txns.m5&&x.txns.m5.sells)||0,b6:(x.txns&&x.txns.h6&&x.txns.h6.buys)||0,s6:(x.txns&&x.txns.h6&&x.txns.h6.sells)||0,v1:(x.volume&&x.volume.h1)||0,b1:(x.txns&&x.txns.h1&&x.txns.h1.buys)||0,s1:(x.txns&&x.txns.h1&&x.txns.h1.sells)||0,url:safeUrl(x.url,x.chainId,x.pairAddress,x.baseToken.address),addr:x.baseToken.address,nm:x.baseToken.name||"",pair:x.pairAddress,img:(x.info&&x.info.imageUrl)||""};o.rs=riskCalc(o).s;heatCalc(o);return o}
 function hc(s){return s>=60?"rk-h":s>=30?"rk-y":"rk-m"}
 function heatCalc(o){
   var hrs=o.t?Math.min(24,Math.max(1,(Date.now()-o.t)/36e5)):24,avg=o.v/hrs;
@@ -119,10 +119,10 @@ function load(silent){
   .then(function(){if(id===reqId)loading=false});
 }
 function render(){window.__render=render;D.forEach(function(r){var c=csKnown(r);if(c)r.cs=c.s});
-  var rows=D.filter(function(r){return(chain==="all"||r.c===chain)&&(!minLiq||r.l>=10000)&&(!onlyRk||r.rs>=75)});
+  var rows=D.filter(function(r){return(chain==="all"||r.c===chain)&&(!minLiq||r.l>=10000)&&(!onlyRk||r.rs>=75)&&(!window.DEXF||r.dex===window.DEXF)});
   rows.sort(function(a,b){var x=a[sortK],y=b[sortK];return(x>y?1:x<y?-1:0)*dir});VIS=rows;setTimeout(scanVisible,0);
   var __h=rows.slice(0,window.LIMIT||40).map(function(r,n){
-    return'<tr data-i="'+D.indexOf(r)+'"><td><span class="star'+(W.indexOf(key(r))>-1?' on':'')+'" data-w="'+esc(key(r))+'">'+(W.indexOf(key(r))>-1?'★':'☆')+'</span><span class="sym">'+esc(r.s)+'</span><span class="q"> /'+esc(r.q)+' · '+esc(r.c)+(r.sp?' <span class="rk rk-y" style="min-width:0;font-size:9px;padding:1px 6px">'+(r.fp?'Featured · '+r.fp:'Featured')+'</span>':'')+'</span></td>'+
+    return'<tr data-i="'+D.indexOf(r)+'"><td><span class="star'+(W.indexOf(key(r))>-1?' on':'')+'" data-w="'+esc(key(r))+'">'+(W.indexOf(key(r))>-1?'★':'☆')+'</span><span class="sym">'+esc(r.s)+'</span><span class="nm">'+esc(r.nm||"")+'</span><span class="q"> /'+esc(r.q)+' · '+esc(r.c)+(r.sp?' <span class="rk rk-y" style="min-width:0;font-size:9px;padding:1px 6px">'+(r.fp?'Featured · '+r.fp:'Featured')+'</span>':'')+'</span></td>'+
     '<td>'+fprice(r.p)+'</td><td>'+fage(r.t)+'</td><td>'+r.tx.toLocaleString()+'</td><td>'+fm(r.v)+'</td>'+pc(r.m5)+pc(r.h1)+pc(r.h6)+pc(r.h24)+'<td>'+fm(r.l)+'</td><td><span class="rk '+hc(r.ht)+'">'+r.ht+'</span> <span class="q">'+r.sg.toFixed(1)+'x</span></td><td><span class="rk rk-'+rl(r.rs)[1]+'">'+r.rs+'</span></td>'+caCell(r)+'</tr>'}).join("")||'<tr><td colspan="13" class="q" style="text-align:center;padding:24px">'+(mode==="watch"?"Your watchlist is empty. Tap ☆ on any pair to save it.":mode==="surge"?"No surges passing market and contract checks right now. Check back in a minute.":mode==="featured"?"No featured listings yet. Tap List your token above to be first.":mode==="gainers"?"No positive 24h movers found in this feed.":mode==="losers"?"No negative 24h movers found in this feed.":"No pairs found")+'</td></tr>';setBody(__h);
   Array.prototype.forEach.call(document.querySelectorAll("th"),function(t){t.className=t.getAttribute("data-k")===sortK?"on":""});
 }

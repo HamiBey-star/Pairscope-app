@@ -53,3 +53,11 @@ td:first-child{background:var(--panel);font-weight:600;min-width:190px}
 .up,td.up{color:var(--up)!important}
 .down,td.down{color:var(--down)!important}
 }
+/* filter bar (all screen sizes) */
+#dxf{display:flex;gap:8px;overflow-x:auto;margin:8px 0;scrollbar-width:none}
+#dxf::-webkit-scrollbar{display:none}
+#dxf button,#dxf select{flex:none;height:38px;padding:0 14px;border-radius:999px;border:1px solid #2a2d33;
+  background:#141518;color:#e9ebee;font-size:13px;font-weight:600;appearance:none;-webkit-appearance:none;cursor:pointer}
+#dxf select{padding-right:14px;max-width:46vw}
+#dxf button:active,#dxf select:focus{border-color:#08e0b8;outline:none}
+#dxf button,#dxf select{font:600 13px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
