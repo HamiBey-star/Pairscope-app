@@ -1,5 +1,6 @@
-/* PairScope DEX-screener style overlay. Loaded AFTER styles.css and card-v2.css.
-   Pure CSS: no element IDs or JS hooks are changed, so existing features keep working. */
+/* PairScope DEX-screener style overlay (DESKTOP ONLY, min-width 701px).
+   Mobile keeps the original card layout from styles.css and card-v2.css. */
+@media(min-width:701px){
 :root{--bg:#0c0d0f;--panel:#141518;--panel2:#1b1d21;--line:#26292e;--text:#e9ebee;--muted:#8a8f98;
   --up:#16c784;--down:#ea3943;--accent:#08e0b8;--topbar:48px}
 body{background:var(--bg);font-size:12.5px;-webkit-font-smoothing:antialiased}
@@ -51,12 +52,4 @@ tbody tr:hover td{background:var(--panel2)}
 td:first-child{background:var(--panel);font-weight:600;min-width:190px}
 .up,td.up{color:var(--up)!important}
 .down,td.down{color:var(--down)!important}
-
-/* Phones: tighter rows, first column stays visible */
-@media(max-width:640px){
-  .wrap{padding:0 8px 20px}
-  header.hd{margin:0 -8px 6px}
-  th,td{padding:6px 8px;font-size:12px}
-  td:first-child{min-width:150px}
-  .tbl{max-height:calc(100dvh - 130px)}
 }
