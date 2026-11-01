@@ -18,12 +18,23 @@ Not financial advice.
 - Token share links are `/s?scan=<address>&c=<chain>` and `/s?c=<chain>&a=<address>`. `functions/s.js` (Cloudflare Pages Function) gives link-preview bots a token-specific card (name, price, 24h, liquidity, token icon from DexScreener) and sends everyone else straight to the app. `_routes.json` makes sure only `/s` runs the function. Needs a Git-connected Pages deploy (a plain drag-and-drop upload ignores `functions/`).
 
 - Share card (`share()` in `js/tools.js`) draws the coin picture. It loads it through `functions/img.js` (/img, DexScreener hosts only) so the browser can export the image, with a letter avatar as fallback.
-- Cache busting: `index.html` loads css/js with `?v=20261021b`. Change that value (search and replace) whenever you redeploy so phones don't keep old files.
+- Cache busting: every css/js tag in `index.html` has its own `?v=` value. When you change a css/js file, change the `?v=` on that file's tag (for example `js/tools.js?v=20261101a`) so phones don't keep the old copy.
 
 ## Before you deploy
 - `og.jpg` (share image) must stay in the repo root; index.html points to https://pairscope.online/og.jpg
 - Attach pairscope.online as a custom domain in Cloudflare
 - Never commit Worker secrets; use `wrangler secret put`
+
+## Secrets and bindings (set in Cloudflare Pages > Settings; never commit them)
+- `DB` (D1 binding): used by `functions/api/votes.js`. Table definition: `db/schema.sql`.
+- `HELIUS_AUTH` (secret, recommended): set the same long random string as the Helius webhook `authHeader`. `functions/api/webhook.js` rejects requests without it. Until it is set the webhook stays open and logs a warning.
+- `VOTE_SALT` (secret, optional): makes vote ids unguessable. Set it once and leave it; changing it later resets everyone's "my vote" marks.
+
+## Known limits (next phase)
+- Market data comes from DexScreener, GeckoTerminal and GoPlus (see `connect-src` in `index.html`). The Helius webhook only logs events so far. Next: normalise swaps and store them in D1, then build candles from your own data.
+- `launchpad.html` loads `@solana/web3.js` from jsDelivr (pinned version, no integrity hash) and calls `https://api.pairscope.online`, which is not part of this repo. Add an `integrity=` hash or self-host the file before promoting that page.
+- `scripts/parked/` holds three unused files (see the README.txt inside). They are not part of the live site.
+- `scripts/pack.mjs` now refuses to publish stray backup files such as `index.html2` or `style.css1`.
 
 ## Still to do
 - Remove `'unsafe-inline'` from `style-src` (about 80 inline style attributes remain)

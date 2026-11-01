@@ -131,7 +131,7 @@ function share(r){cardLogo(r,function(im){var c=document.createElement("canvas")
     try{navigator.clipboard.writeText(u).catch(function(){})}catch(e){}var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=r.s+"-pairscope.png";a.click();toast("Link copied, image card saved")})})}
 
 /* detail action bar */
-var _o3=openR;openR=function(r){_o3(r);try{var bar=mk("div","pxbar",'<button class="chip" data-x="sh">🔗 Share</button><button class="chip" data-x="pb">💼 Paper buy</button><button class="chip" data-x="cm">⚖ Compare</button>');bar.R=r;try{cardLogo(r,function(){})}catch(e){}var g=$("grab");if(g)g.after(bar);else dt.prepend(bar)}catch(e){}};
+var _o3=openR;openR=function(r){_o3(r);try{var bar=mk("div","pxbar",'<button class="chip" data-x="sh">🖼 Share card</button><button class="chip" data-x="pb">💼 Paper buy</button><button class="chip" data-x="cm">⚖ Compare</button>');bar.R=r;try{cardLogo(r,function(){})}catch(e){}var h=dt.querySelector(".hd"),g=$("grab");if(h)h.after(bar);else if(g)g.after(bar);else dt.prepend(bar)}catch(e){}};
 
 /* csv */
 function csv(){var rs=rowsOn().map(function(t){return D[+t.getAttribute("data-i")]}).filter(Boolean);if(!rs.length){toast("Nothing to export");return}

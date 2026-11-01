@@ -82,3 +82,10 @@ header.hd .hd-tag,header.hd .hd-chips,header.hd .hd-scope{display:none}
 #body tr>td:nth-child(3).new:before{content:"\1F331 "!important;display:inline!important;font-size:13px}
 .wrap>#dxf{order:2}
 }
+
+/* token sheet action bar: one tidy row, scrolls sideways instead of wrapping onto a second line */
+#pxbar{flex-wrap:nowrap;overflow-x:auto;align-items:center;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#pxbar::-webkit-scrollbar{display:none}
+#pxbar>*{flex:none;white-space:nowrap}
+#pxbar{gap:4px}
+#pxbar .chip{padding:5px 9px}

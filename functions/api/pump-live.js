@@ -1,6 +1,11 @@
 // functions/api/pump-live.js : relays PumpPortal new-token feed to the browser
 export async function onRequestGet({ request }) {
   if (request.headers.get("Upgrade") !== "websocket") return new Response("websocket only", { status: 426 });
+  const origin = request.headers.get("Origin") || "";
+  let host = "";
+  try { host = new URL(origin).hostname; } catch (_) {}
+  const ok = host === "pairscope.online" || host.endsWith(".pairscope.online") || host.endsWith(".pages.dev") || host === "localhost" || host === "127.0.0.1";
+  if (!ok) return new Response("forbidden", { status: 403 });
   const pair = new WebSocketPair();
   const client = pair[0], server = pair[1];
   server.accept();

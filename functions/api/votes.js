@@ -1,8 +1,8 @@
 const TYPES = ['rocket', 'fire', 'poop', 'flag'];
 const OK = /^[A-Za-z0-9:_.-]{3,100}$/;
 
-async function voterId(request) {
-  const raw = (request.headers.get('CF-Connecting-IP') || '') + (request.headers.get('User-Agent') || '');
+async function voterId(request, env) {
+  const raw = ((env && env.VOTE_SALT) || '') + (request.headers.get('CF-Connecting-IP') || '') + (request.headers.get('User-Agent') || '');
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
   return [...new Uint8Array(buf)].map(function (b) { return b.toString(16).padStart(2, '0'); }).join('').slice(0, 32);
 }
@@ -13,7 +13,7 @@ export async function onRequestGet({ request, env }) {
   const raw = single || u.searchParams.get('tokens') || '';
   const list = raw.split(',').filter(function (t) { return OK.test(t); }).slice(0, 100);
   if (!list.length) return Response.json(single ? { counts: {}, mine: [] } : {});
-  const me = await voterId(request);
+  const me = await voterId(request, env);
   const marks = list.map(function () { return '?'; }).join(',');
   const res = await env.DB.prepare(
     'SELECT token, type, COUNT(*) AS c, SUM(voter = ?) AS mine FROM votes WHERE token IN (' + marks + ') GROUP BY token, type'
@@ -28,10 +28,12 @@ export async function onRequestGet({ request, env }) {
 }
 
 export async function onRequestPost({ request, env }) {
-  const body = await request.json();
+  let body;
+  try { body = await request.json(); } catch (_) { return new Response('bad request', { status: 400 }); }
+  if (!body || typeof body !== 'object') return new Response('bad request', { status: 400 });
   if (!TYPES.includes(body.type) || !OK.test(body.token || ''))
     return new Response('bad request', { status: 400 });
-  const me = await voterId(request);
+  const me = await voterId(request, env);
   const old = await env.DB.prepare('SELECT type FROM votes WHERE token=? AND voter=?')
     .bind(body.token, me).all();
   const same = old.results.some(function (r) { return r.type === body.type; });

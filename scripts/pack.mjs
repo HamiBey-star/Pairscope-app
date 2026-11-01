@@ -7,8 +7,8 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "pairscope-upload.zip");
-const SKIP_DIRS = new Set([".git", ".github", "scripts", "node_modules"]);
-const SKIP_FILES = /(\.zip|\.bat|\.command|\.sh)$|^(README\.md|START-HERE\.txt|\.DS_Store|Thumbs\.db)$/;
+const SKIP_DIRS = new Set([".git", ".github", "scripts", "db", "node_modules"]);
+const SKIP_FILES = /(\.zip|\.bat|\.command|\.sh)$|\.(html|css|js|mjs|xml|json)[0-9]+$|\.(bak|orig|old|tmp)$|^(README\.md|START-HERE\.txt|\.DS_Store|Thumbs\.db)$/;
 
 const T = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
 const crc32 = (b) => { let c = 0xffffffff; for (let i = 0; i < b.length; i++) c = T[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
