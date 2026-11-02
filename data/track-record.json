@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "entries": [
   {
    "s": "Bow",
@@ -8,9 +8,10 @@
    "d": "2026-10-26",
    "rs": 41,
    "why": "Launched under 1 hour ago; Below-average liquidity ($32.7K); Volume 42x liquidity",
-   "o": "pending",
+   "o": "down50",
    "p0": 0.0001423,
-   "l0": 32718
+   "l0": 32718,
+   "oc": "2026-11-02"
   },
   {
    "s": "HOOKER",
@@ -19,9 +20,10 @@
    "d": "2026-10-26",
    "rs": 42,
    "why": "Less than 24 hours old; Low liquidity ($12.0K); Volume 29x liquidity",
-   "o": "pending",
+   "o": "down50",
    "p0": 0.00002527,
-   "l0": 11981
+   "l0": 11981,
+   "oc": "2026-11-02"
   },
   {
    "s": "HW",
