@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-04",
+ "updated": "2026-11-05",
  "entries": [
   {
    "s": "Bow",
@@ -43,9 +43,10 @@
    "d": "2026-10-29",
    "rs": 42,
    "why": "Less than 24 hours old; Low liquidity ($13.3K); Volume 61x liquidity",
-   "o": "pending",
+   "o": "down50",
    "p0": 0.00002356,
-   "l0": 13328
+   "l0": 13328,
+   "oc": "2026-11-05"
   },
   {
    "s": "TOLY",
@@ -57,6 +58,17 @@
    "o": "pending",
    "p0": 0.00003708,
    "l0": 14512
+  },
+  {
+   "s": "SCRYPT",
+   "c": "solana",
+   "a": "4QnrCt8AbhoD4Th2a3ph6QMsiwLKA2rrZnJN9aZpJnzM",
+   "d": "2026-11-05",
+   "rs": 48,
+   "why": "Less than 24 hours old; Low liquidity ($15.2K); Price moved over 200% in 24h",
+   "o": "pending",
+   "p0": 0.00002666,
+   "l0": 15177
   }
  ]
 }
