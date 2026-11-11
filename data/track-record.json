@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-10",
+ "updated": "2026-11-11",
  "entries": [
   {
    "s": "Bow",
@@ -56,9 +56,10 @@
    "d": "2026-11-04",
    "rs": 40,
    "why": "Launched under 1 hour ago; Low liquidity ($14.5K); Volume 29x liquidity",
-   "o": "pending",
+   "o": "down50",
    "p0": 0.00003708,
-   "l0": 14512
+   "l0": 14512,
+   "oc": "2026-11-11"
   },
   {
    "s": "SCRYPT",
