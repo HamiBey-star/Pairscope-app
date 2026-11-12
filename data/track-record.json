@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-11",
+ "updated": "2026-11-12",
  "entries": [
   {
    "s": "Bow",
@@ -68,9 +68,10 @@
    "d": "2026-11-05",
    "rs": 48,
    "why": "Less than 24 hours old; Low liquidity ($15.2K); Price moved over 200% in 24h",
-   "o": "pending",
+   "o": "rugged",
    "p0": 0.00002666,
-   "l0": 15177
+   "l0": 15177,
+   "oc": "2026-11-12"
   },
   {
    "s": "LABS",
