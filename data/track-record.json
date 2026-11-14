@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-13",
+ "updated": "2026-11-14",
  "entries": [
   {
    "s": "Bow",
@@ -80,9 +80,10 @@
    "d": "2026-11-06",
    "rs": 40,
    "why": "Launched under 1 hour ago; Low liquidity ($11.3K); Volume 23x liquidity",
-   "o": "pending",
+   "o": "down50",
    "p0": 0.00002509,
-   "l0": 11262
+   "l0": 11262,
+   "oc": "2026-11-14"
   },
   {
    "s": "poverty",
