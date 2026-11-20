@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-19",
+ "updated": "2026-11-20",
  "entries": [
   {
    "s": "Bow",
@@ -104,9 +104,10 @@
    "d": "2026-11-13",
    "rs": 41,
    "why": "Launched under 1 hour ago; Below-average liquidity ($46.7K); Volume 25x liquidity",
-   "o": "pending",
+   "o": "down50",
    "p0": 0.0003227,
-   "l0": 46700
+   "l0": 46700,
+   "oc": "2026-11-20"
   },
   {
    "s": "twert",
