@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-20",
+ "updated": "2026-11-21",
  "entries": [
   {
    "s": "Bow",
@@ -141,6 +141,28 @@
    "o": "pending",
    "p0": 0.00004602,
    "l0": 14319
+  },
+  {
+   "s": "Bigfoot",
+   "c": "solana",
+   "a": "3b7WvfRxRaoMuq4j6JWJzrL5mym3Km3QzfX5dqCopump",
+   "d": "2026-11-21",
+   "rs": 32,
+   "why": "Launched under 1 hour ago; Low liquidity ($15.9K); Volume 36x liquidity",
+   "o": "pending",
+   "p0": 0.00005038,
+   "l0": 15855
+  },
+  {
+   "s": "Emily",
+   "c": "solana",
+   "a": "EK2tRRD5jqNUxohdMjbjnJ5Q3t9TYGBkZVjtMceDpump",
+   "d": "2026-11-21",
+   "rs": 42,
+   "why": "Less than 24 hours old; Low liquidity ($17.9K); Volume 48x liquidity",
+   "o": "pending",
+   "p0": 0.0000633,
+   "l0": 17942
   }
  ]
 }
