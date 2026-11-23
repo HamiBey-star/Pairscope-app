@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22",
+ "updated": "2026-11-23",
  "entries": [
   {
    "s": "Bow",
@@ -128,9 +128,10 @@
    "d": "2026-11-16",
    "rs": 42,
    "why": "Launched under 1 hour ago; Low liquidity ($15.5K); Price moved over 50% in the last hour",
-   "o": "pending",
+   "o": "down50",
    "p0": 0.00005555,
-   "l0": 15541
+   "l0": 15541,
+   "oc": "2026-11-23"
   },
   {
    "s": "Rex",
