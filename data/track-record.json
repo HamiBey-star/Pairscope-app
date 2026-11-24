@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23",
+ "updated": "2026-11-24",
  "entries": [
   {
    "s": "Bow",
@@ -140,9 +140,10 @@
    "d": "2026-11-17",
    "rs": 40,
    "why": "Launched under 1 hour ago; Low liquidity ($14.3K); Volume 25x liquidity",
-   "o": "pending",
+   "o": "down50",
    "p0": 0.00004602,
-   "l0": 14319
+   "l0": 14319,
+   "oc": "2026-11-24"
   },
   {
    "s": "Bigfoot",
